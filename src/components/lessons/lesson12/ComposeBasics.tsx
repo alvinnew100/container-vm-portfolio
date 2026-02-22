@@ -1,8 +1,95 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import CodeBlock from "@/components/story/CodeBlock";
 import InfoCard from "@/components/story/InfoCard";
+import AnalogyCard from "@/components/story/AnalogyCard";
+import TermDefinition from "@/components/story/TermDefinition";
+
+function ComposeArchDiagram() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  const services = [
+    { name: "web", port: ":3000", color: "docker-blue", x: 0 },
+    { name: "api", port: ":8080", color: "docker-teal", x: 1 },
+    { name: "db", port: ":5432", color: "docker-violet", x: 2 },
+  ];
+
+  return (
+    <div ref={ref} className="bg-story-card rounded-2xl p-6 sm:p-8 border border-story-border card-shadow mb-8">
+      <h4 className="text-sm font-mono text-docker-blue uppercase tracking-wider mb-6 text-center">
+        Compose Multi-Service Architecture
+      </h4>
+      <div className="max-w-md mx-auto">
+        {/* Services row */}
+        <div className="flex items-start justify-center gap-4 mb-4">
+          {services.map((svc, i) => (
+            <motion.div
+              key={svc.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.15 * i, duration: 0.5 }}
+              className={`bg-${svc.color}/10 border border-${svc.color}/30 rounded-xl px-4 py-3 text-center flex-1`}
+            >
+              <div className={`text-${svc.color} font-bold text-xs`}>{svc.name}</div>
+              <div className="text-text-muted text-[9px] font-mono">{svc.port}</div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Connection lines */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.5, duration: 0.4 }}
+          className="flex justify-center gap-2 mb-1"
+        >
+          <div className="flex items-center gap-1 text-text-muted text-[9px] font-mono">
+            <span className="text-docker-blue">web</span>
+            <span>&harr;</span>
+            <span className="text-docker-teal">api</span>
+            <span>&harr;</span>
+            <span className="text-docker-violet">db</span>
+          </div>
+        </motion.div>
+
+        {/* Network bar */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0.5 }}
+          animate={isInView ? { opacity: 1, scaleX: 1 } : {}}
+          transition={{ delay: 0.6, duration: 0.4 }}
+          className="bg-docker-teal/10 border border-docker-teal/30 rounded-lg px-4 py-2 text-center mb-3"
+        >
+          <span className="text-docker-teal text-[10px] font-mono">compose_default network (automatic DNS)</span>
+        </motion.div>
+
+        {/* Volume */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.8, duration: 0.4 }}
+          className="flex justify-end"
+        >
+          <div className="bg-docker-violet/10 border border-docker-violet/30 rounded-lg px-3 py-1.5 text-center">
+            <div className="text-docker-violet text-[9px] font-mono">pgdata volume</div>
+            <div className="text-text-muted text-[8px]">persistent storage</div>
+          </div>
+        </motion.div>
+      </div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ delay: 1.0, duration: 0.5 }}
+        className="text-text-muted text-xs text-center mt-4"
+      >
+        Compose creates networks, volumes, and all services from a single YAML file
+      </motion.p>
+    </div>
+  );
+}
 
 export default function ComposeBasics() {
   return (
@@ -11,11 +98,21 @@ export default function ComposeBasics() {
         Docker Compose — Multi-Container Applications
       </h3>
       <p className="text-text-secondary leading-relaxed mb-6">
-        Docker Compose lets you define and manage multi-container applications in a single YAML file.
-        Instead of running multiple <code>docker run</code> commands with long flag lists, you declare
+        Docker Compose lets you define and manage multi-container applications in a single{" "}
+        <TermDefinition term="YAML" definition="YAML Ain't Markup Language — a human-readable data format that uses indentation (spaces, not tabs) to represent structure, commonly used for configuration files" />{" "}
+        file. Instead of running multiple <code>docker run</code> commands with long flag lists, you declare
         all your services, networks, and volumes in <code>docker-compose.yml</code> and manage them
         as a unit.
       </p>
+
+      <AnalogyCard
+        concept="Compose Is a Conductor"
+        analogy="If each container is a musician, Docker Compose is the conductor — one YAML file brings all the services in together, ensures they start in the right order, connects them to the same network, and shuts them all down with a single gesture."
+      />
+
+      <div className="mt-8">
+        <ComposeArchDiagram />
+      </div>
 
       <h4 className="text-text-primary font-semibold text-sm mb-3">
         Compose File Structure

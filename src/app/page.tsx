@@ -6,6 +6,13 @@ import LessonObjectives from "@/components/story/LessonObjectives";
 // Hero
 import Hero from "@/components/lessons/lesson1/Hero";
 
+// Primer: Computer Architecture
+import WhatIsAComputer from "@/components/lessons/lesson0/WhatIsAComputer";
+import WhatIsAnOS from "@/components/lessons/lesson0/WhatIsAnOS";
+import FilesystemBasics from "@/components/lessons/lesson0/FilesystemBasics";
+import Networking101 from "@/components/lessons/lesson0/Networking101";
+import ProcessesDeepDive from "@/components/lessons/lesson0/ProcessesDeepDive";
+
 // Lesson 1: Why Virtualization?
 import WhyVirtualization from "@/components/lessons/lesson1/WhyVirtualization";
 
@@ -60,6 +67,21 @@ export default function HomePage() {
     <div>
       {/* ===================== HERO ===================== */}
       <Hero />
+
+      {/* ===================== PRIMER: COMPUTER ARCHITECTURE ===================== */}
+      <LessonDivider lesson={0} title="Computer Architecture" id="lesson-0" />
+      <LessonObjectives objectives={[
+        "Identify the four main components of a computer (CPU, RAM, disk, NIC) and what each does",
+        "Explain what an operating system and kernel do, and why Ring 0 vs Ring 3 matters",
+        "Understand filesystems, paths, and mounting — the foundation for container filesystems",
+        "Know the basics of networking: IP addresses, ports, DNS, NAT",
+        "Understand processes, PIDs, and fork/exec — because containers ARE processes",
+      ]} />
+      <WhatIsAComputer />
+      <WhatIsAnOS />
+      <FilesystemBasics />
+      <Networking101 />
+      <ProcessesDeepDive />
 
       {/* ===================== LESSON 1: WHY VIRTUALIZATION? ===================== */}
       <LessonDivider lesson={1} title="Why Virtualization?" id="lesson-1" />

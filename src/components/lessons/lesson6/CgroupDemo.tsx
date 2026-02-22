@@ -1,8 +1,133 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
+
+function CgroupHierarchyDiagram() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  return (
+    <div ref={ref} className="grid sm:grid-cols-2 gap-6 mb-8">
+      {/* v1 */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={isInView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 0.5 }}
+        className="bg-story-card rounded-2xl p-5 border border-story-border card-shadow"
+      >
+        <h4 className="text-docker-amber font-semibold text-sm mb-4 text-center">Cgroup v1: Multiple Trees</h4>
+        <div className="space-y-3">
+          {["cpu", "memory", "blkio"].map((ctrl, i) => (
+            <motion.div
+              key={ctrl}
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.3 + 0.1 * i, duration: 0.3 }}
+            >
+              <div className="bg-docker-amber/10 border border-docker-amber/20 rounded-lg px-3 py-1.5 text-center mb-1">
+                <span className="text-docker-amber text-xs font-mono font-bold">{ctrl}/</span>
+              </div>
+              <div className="flex gap-1 ml-4">
+                <div className="bg-story-surface rounded px-2 py-0.5 text-[9px] text-text-muted font-mono">container-a</div>
+                <div className="bg-story-surface rounded px-2 py-0.5 text-[9px] text-text-muted font-mono">container-b</div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        <p className="text-text-muted text-[10px] text-center mt-3">
+          Each controller has its own tree. A process can be in different groups per controller.
+        </p>
+      </motion.div>
+
+      {/* v2 */}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={isInView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 0.5 }}
+        className="bg-story-card rounded-2xl p-5 border border-story-border card-shadow"
+      >
+        <h4 className="text-docker-teal font-semibold text-sm mb-4 text-center">Cgroup v2: Single Tree</h4>
+        <div className="space-y-1">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.3, duration: 0.3 }}
+            className="bg-docker-teal/10 border border-docker-teal/20 rounded-lg px-3 py-1.5 text-center"
+          >
+            <span className="text-docker-teal text-xs font-mono font-bold">/sys/fs/cgroup/ (unified)</span>
+          </motion.div>
+          {["container-a", "container-b"].map((c, i) => (
+            <motion.div
+              key={c}
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.5 + 0.1 * i, duration: 0.3 }}
+              className="ml-6 bg-docker-teal/5 border border-docker-teal/10 rounded-lg px-3 py-2"
+            >
+              <div className="text-docker-teal text-[10px] font-mono font-bold">{c}/</div>
+              <div className="flex gap-1 mt-1 flex-wrap">
+                {["cpu.max", "memory.max", "io.max"].map((f) => (
+                  <span key={f} className="text-[8px] text-text-muted font-mono bg-story-surface px-1 rounded">{f}</span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        <p className="text-text-muted text-[10px] text-center mt-3">
+          One tree. All controllers apply to the same group. Simpler and more consistent.
+        </p>
+      </motion.div>
+    </div>
+  );
+}
+
+function DockerToCgroupFlow() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  const steps = [
+    { label: "docker run --memory=256m", color: "docker-blue" },
+    { label: "Docker creates cgroup", color: "docker-teal" },
+    { label: "memory.max = 268435456", color: "docker-violet" },
+    { label: "Kernel enforces limit", color: "docker-amber" },
+  ];
+
+  return (
+    <div ref={ref} className="bg-story-card rounded-2xl p-6 border border-story-border card-shadow mb-8">
+      <h4 className="text-sm font-mono text-docker-blue uppercase tracking-wider mb-6 text-center">
+        Docker Flag &rarr; Cgroup Setting
+      </h4>
+      <div className="flex items-center justify-center gap-2 flex-wrap">
+        {steps.map((step, i) => (
+          <div key={step.label} className="flex items-center gap-2">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: 0.2 * i, duration: 0.3 }}
+              className={`bg-${step.color}/10 border border-${step.color}/20 rounded-lg px-3 py-2`}
+            >
+              <span className={`text-${step.color} text-[10px] font-mono font-bold`}>{step.label}</span>
+            </motion.div>
+            {i < steps.length - 1 && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.2 * i + 0.1, duration: 0.2 }}
+                className="text-text-muted text-xs"
+              >
+                &rarr;
+              </motion.span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function CgroupDemo() {
   return (
@@ -17,26 +142,8 @@ export default function CgroupDemo() {
         controllers are managed in one tree. Most modern distros (Ubuntu 22.04+, Fedora 31+) default to v2.
       </p>
 
-      <div className="grid sm:grid-cols-2 gap-6 mb-8">
-        <div className="bg-story-card rounded-xl p-5 border border-story-border card-shadow">
-          <h4 className="text-docker-amber font-semibold text-sm mb-3">Cgroup v1</h4>
-          <ul className="space-y-2 text-text-secondary text-sm">
-            <li>Separate hierarchy per controller</li>
-            <li>A process can be in different groups for different controllers</li>
-            <li>Complex to manage, inconsistent behavior</li>
-            <li>Mounted at <code>/sys/fs/cgroup/cpu/</code>, <code>/sys/fs/cgroup/memory/</code>, etc.</li>
-          </ul>
-        </div>
-        <div className="bg-story-card rounded-xl p-5 border border-story-border card-shadow">
-          <h4 className="text-docker-teal font-semibold text-sm mb-3">Cgroup v2 (unified)</h4>
-          <ul className="space-y-2 text-text-secondary text-sm">
-            <li>Single hierarchy for all controllers</li>
-            <li>A process is in exactly one group, all controllers apply</li>
-            <li>Simpler, consistent, better resource distribution</li>
-            <li>Mounted at <code>/sys/fs/cgroup/</code> (unified)</li>
-          </ul>
-        </div>
-      </div>
+      <CgroupHierarchyDiagram />
+      <DockerToCgroupFlow />
 
       <div className="space-y-6 mb-8">
         <div>
@@ -71,7 +178,7 @@ export default function CgroupDemo() {
 
         <div>
           <h4 className="text-text-primary font-semibold text-sm mb-3">
-            Docker resource limits → cgroup settings
+            Docker resource limits &rarr; cgroup settings
           </h4>
           <TerminalBlock
             title="docker cgroups"

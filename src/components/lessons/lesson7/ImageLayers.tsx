@@ -2,6 +2,8 @@
 
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
+import AnalogyCard from "@/components/story/AnalogyCard";
+import TermDefinition from "@/components/story/TermDefinition";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import ZineCallout from "@/components/story/ZineCallout";
 import { motion, useInView } from "framer-motion";
@@ -64,19 +66,28 @@ export default function ImageLayers() {
       <p className="text-text-secondary leading-relaxed mb-6">
         A container image is not a single monolithic file — it&apos;s a <strong className="text-text-primary">stack of
         read-only layers</strong>. Each instruction in a Dockerfile (<code>FROM</code>, <code>RUN</code>,
-        <code> COPY</code>) creates a new layer. A <strong className="text-text-primary">union filesystem</strong> (like
-        OverlayFS) merges all layers into a single coherent view.
+        <code> COPY</code>) creates a new layer. A{" "}
+        <TermDefinition term="union filesystem" definition="a filesystem that merges multiple directories into a single view — files in upper layers override files in lower layers with the same name" />{" "}
+        (like OverlayFS) merges all layers into a single coherent view.
       </p>
 
-      <LayerStackDiagram />
+      <AnalogyCard
+        concept="Layers Are Like Transparent Sheets"
+        analogy="Imagine stacking transparent overhead projector sheets. The bottom sheet has the base OS. Each sheet above adds more — libraries, dependencies, your app code. When you look down through the stack, you see everything combined. If two sheets have the same file, the top one wins."
+      />
+
+      <div className="mt-8">
+        <LayerStackDiagram />
+      </div>
 
       <div className="grid sm:grid-cols-2 gap-4 mb-8">
         <div className="bg-story-card rounded-xl p-5 border border-story-border card-shadow">
           <h4 className="text-docker-blue font-semibold text-sm mb-2">Layer Sharing</h4>
           <p className="text-text-secondary text-sm leading-relaxed">
             If 10 containers use the same <code>ubuntu:22.04</code> base image, the base layer is stored only
-            once on disk and shared by all 10. Only the unique upper layers (app code, configs) are duplicated.
-            This saves enormous amounts of disk space and speeds up image pulls.
+            once on disk and shared by all 10. Only the unique upper layers are duplicated. Each layer is
+            identified by a{" "}
+            <TermDefinition term="sha256 hash" definition="a cryptographic fingerprint — a unique string computed from the layer's contents, used to verify integrity" />.
           </p>
         </div>
         <div className="bg-story-card rounded-xl p-5 border border-story-border card-shadow">
@@ -84,18 +95,18 @@ export default function ImageLayers() {
           <p className="text-text-secondary text-sm leading-relaxed">
             When a container modifies a file from a lower layer, OverlayFS copies that file to the container&apos;s
             writable layer first (copy-up), then applies the change. The original layer is never modified.
-            This is why image layers are immutable and why containers start instantly — no filesystem copying needed.
+            Layers are stored as{" "}
+            <TermDefinition term="tarballs" definition="compressed archive files (.tar.gz) — each layer is packed as a tarball for efficient storage and transfer" />.
           </p>
         </div>
       </div>
 
-      {/* Overlay filesystem details from the zine */}
       <h4 className="text-text-primary font-semibold text-sm mb-3 mt-8">
         How OverlayFS Works Under the Hood
       </h4>
       <p className="text-text-secondary text-sm leading-relaxed mb-4">
-        A layer is literally a <strong className="text-text-primary">directory</strong> on disk (identified by a sha256 hash of its contents).
-        The <code>mount -t overlay</code> command combines multiple directories into a single merged view
+        A layer is literally a <strong className="text-text-primary">directory</strong> on disk. The{" "}
+        <code>mount -t overlay</code> command combines multiple directories into a single merged view
         using 4 parameters:
       </p>
 

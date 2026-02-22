@@ -1,8 +1,63 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
+
+function DnsFlowDiagram() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  const steps = [
+    { label: "Container A", desc: '"where is api?"', color: "docker-blue" },
+    { label: "Docker DNS", desc: "127.0.0.11", color: "docker-teal" },
+    { label: "Resolves name", desc: 'api → 172.18.0.2', color: "docker-violet" },
+    { label: "Container B (api)", desc: "172.18.0.2", color: "docker-amber" },
+  ];
+
+  return (
+    <div ref={ref} className="bg-story-card rounded-2xl p-6 sm:p-8 border border-story-border card-shadow mb-8">
+      <h4 className="text-sm font-mono text-docker-blue uppercase tracking-wider mb-6 text-center">
+        Docker DNS Resolution
+      </h4>
+      <div className="flex items-center justify-center gap-2 flex-wrap">
+        {steps.map((step, i) => (
+          <div key={step.label} className="flex items-center gap-2">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.2 * i, duration: 0.4 }}
+              className={`bg-${step.color}/10 border border-${step.color}/30 rounded-lg px-3 py-2 text-center min-w-[90px]`}
+            >
+              <div className={`text-${step.color} font-bold text-xs`}>{step.label}</div>
+              <div className="text-text-muted text-[9px] mt-0.5">{step.desc}</div>
+            </motion.div>
+            {i < steps.length - 1 && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.2 * i + 0.1, duration: 0.3 }}
+                className="text-text-muted text-xs font-mono"
+              >
+                &rarr;
+              </motion.span>
+            )}
+          </div>
+        ))}
+      </div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ delay: 1.0, duration: 0.5 }}
+        className="text-text-muted text-xs text-center mt-4"
+      >
+        Docker&apos;s embedded DNS (as we learned in the Primer, DNS translates names to IP addresses) runs at 127.0.0.11 inside each container
+      </motion.p>
+    </div>
+  );
+}
 
 export default function Dns() {
   return (
@@ -13,8 +68,10 @@ export default function Dns() {
       <p className="text-text-secondary leading-relaxed mb-6">
         On <strong className="text-text-primary">user-defined bridge networks</strong>, Docker runs an embedded DNS server
         that lets containers find each other by name. This is one of the biggest advantages of custom networks
-        over the default bridge, where you&apos;d need to use IP addresses or legacy <code>--link</code>.
+        over the default bridge, where you&apos;d need to use IP addresses.
       </p>
+
+      <DnsFlowDiagram />
 
       <TerminalBlock
         title="DNS discovery demo"
@@ -44,7 +101,7 @@ export default function Dns() {
           <h4 className="text-docker-blue font-semibold text-sm mb-2">Default Bridge</h4>
           <ul className="space-y-1 text-text-secondary text-sm">
             <li>&#10008; No automatic DNS</li>
-            <li>&#10008; Must use IP addresses or --link</li>
+            <li>&#10008; Must use IP addresses</li>
             <li>&#10008; All containers on same default network</li>
           </ul>
         </div>
@@ -60,8 +117,8 @@ export default function Dns() {
 
       <InfoCard variant="tip" title="Always Use Custom Networks">
         For any multi-container application, create a custom network with <code>docker network create</code>.
-        This gives you DNS-based service discovery, better isolation (containers on different networks
-        can&apos;t communicate), and the ability to connect/disconnect containers dynamically.
+        This gives you DNS-based service discovery, better isolation, and the ability to connect/disconnect
+        containers dynamically.
       </InfoCard>
     </SectionWrapper>
   );

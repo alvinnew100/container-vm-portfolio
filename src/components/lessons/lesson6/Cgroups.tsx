@@ -2,6 +2,8 @@
 
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
+import AnalogyCard from "@/components/story/AnalogyCard";
+import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
@@ -41,8 +43,13 @@ export default function Cgroups() {
         prioritize CPU, memory, I/O bandwidth, and other resources for groups of processes.
       </p>
 
+      <AnalogyCard
+        concept="Namespaces = Walls, Cgroups = Meter Boxes"
+        analogy="Namespaces are the walls of your apartment — they control what you can see. Cgroups are the utility meters — they control how much electricity (CPU), water (memory), and gas (I/O) you can use. Both are needed for a proper container."
+      />
+
       {/* Resource visualization */}
-      <div className="bg-story-card rounded-2xl p-6 border border-story-border card-shadow mb-8">
+      <div className="bg-story-card rounded-2xl p-6 border border-story-border card-shadow mb-8 mt-8">
         <h4 className="text-text-primary font-semibold text-sm mb-4">Container Resource Usage</h4>
         <ResourceMeter label="CPU" value={250} max={1000} unit="m" color="docker-blue" />
         <ResourceMeter label="Memory" value={128} max={512} unit="MB" color="docker-teal" />
@@ -54,17 +61,25 @@ export default function Cgroups() {
         <div className="bg-story-card rounded-xl p-5 border border-story-border card-shadow">
           <h4 className="text-docker-blue font-semibold text-sm mb-2">CPU Limits</h4>
           <ul className="space-y-2 text-text-secondary text-sm">
-            <li><code>cpu.shares</code> — Relative weight (default 1024). Only matters under contention.</li>
-            <li><code>cpu.cfs_quota_us</code> — Hard limit. E.g., 50000/100000 = 50% of one core.</li>
+            <li><code>cpu.shares</code> — Relative weight (default 1024). Only matters under{" "}
+              <TermDefinition term="contention" definition="when multiple processes compete for the same resource — if nobody else wants CPU, limits don't kick in" />.
+            </li>
+            <li><code>cpu.cfs_quota_us</code> — Hard limit set by the{" "}
+              <TermDefinition term="CFS" definition="Completely Fair Scheduler — Linux's default CPU scheduler that distributes time slices proportionally" />.
+              E.g., 50000/100000 = 50% of one core.</li>
             <li><code>cpuset.cpus</code> — Pin to specific CPU cores.</li>
           </ul>
         </div>
         <div className="bg-story-card rounded-xl p-5 border border-story-border card-shadow">
           <h4 className="text-docker-teal font-semibold text-sm mb-2">Memory Limits</h4>
           <ul className="space-y-2 text-text-secondary text-sm">
-            <li><code>memory.limit_in_bytes</code> — Hard limit. OOM killer triggers at this threshold.</li>
+            <li><code>memory.limit_in_bytes</code> — Hard limit.{" "}
+              <TermDefinition term="OOM killer" definition="Out of Memory killer — the kernel's last resort that terminates processes when memory is exhausted" />{" "}
+              triggers at this threshold.</li>
             <li><code>memory.soft_limit_in_bytes</code> — Soft limit. Only enforced under contention.</li>
-            <li><code>memory.swappiness</code> — Controls swap aggressiveness (0-100).</li>
+            <li><code>memory.swappiness</code> — Controls{" "}
+              <TermDefinition term="swap" definition="using disk space as emergency 'extra memory' — much slower than real RAM" />{" "}
+              aggressiveness (0-100).</li>
           </ul>
         </div>
         <div className="bg-story-card rounded-xl p-5 border border-story-border card-shadow">
@@ -82,10 +97,9 @@ export default function Cgroups() {
         <div className="bg-docker-red/5 rounded-xl p-5 border border-docker-red/20">
           <h4 className="text-docker-red font-semibold text-sm mb-2">Memory: OOM Killer</h4>
           <p className="text-text-secondary text-sm leading-relaxed">
-            When a container exceeds its memory limit, the kernel&apos;s <strong>OOM (Out of Memory) killer</strong> steps
-            in and terminates the process. You&apos;ll see &ldquo;Killed&rdquo; in the output. This is a hard stop &mdash;
-            no graceful shutdown. That&apos;s why it&apos;s critical to set memory limits appropriately
-            and monitor usage.
+            When a container exceeds its memory limit, the kernel&apos;s OOM killer steps in and terminates
+            the process. You&apos;ll see &ldquo;Killed&rdquo; in the output. This is a hard stop &mdash;
+            no graceful shutdown. That&apos;s why it&apos;s critical to set memory limits appropriately.
           </p>
         </div>
         <div className="bg-docker-amber/5 rounded-xl p-5 border border-docker-amber/20">
@@ -93,8 +107,7 @@ export default function Cgroups() {
           <p className="text-text-secondary text-sm leading-relaxed">
             When a container hits its CPU quota for the current period, the kernel <strong>throttles</strong> it &mdash;
             the process is paused until the next period begins. Unlike memory, this doesn&apos;t kill anything;
-            the process just has to wait. You&apos;ll see increased latency, not crashes. The quota resets
-            every <code>cpu.cfs_period_us</code> (default 100ms).
+            the process just has to wait. You&apos;ll see increased latency, not crashes.
           </p>
         </div>
       </div>
@@ -103,8 +116,6 @@ export default function Cgroups() {
         When you run <code>docker run --memory=512m --cpus=1.5 myapp</code>, Docker creates a cgroup
         for that container and sets <code>memory.limit_in_bytes=536870912</code> and{" "}
         <code>cpu.cfs_quota_us=150000</code>. The kernel enforces these limits transparently.
-        Cgroups also track usage — you can see a container&apos;s real-time memory and CPU at{" "}
-        <code>/sys/fs/cgroup/</code>.
       </InfoCard>
 
       <div className="mt-4">

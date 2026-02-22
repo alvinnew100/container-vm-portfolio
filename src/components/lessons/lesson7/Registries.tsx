@@ -1,9 +1,58 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
+import AnalogyCard from "@/components/story/AnalogyCard";
+import TermDefinition from "@/components/story/TermDefinition";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import ZineCallout from "@/components/story/ZineCallout";
+
+function DockerPullFlowDiagram() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  const steps = [
+    { label: "docker pull", desc: "CLI sends request", color: "docker-blue" },
+    { label: "Registry API", desc: "Resolves tag to manifest", color: "docker-teal" },
+    { label: "Download Layers", desc: "Each layer in parallel", color: "docker-violet" },
+    { label: "Local Storage", desc: "Stored in /var/lib/docker", color: "docker-amber" },
+  ];
+
+  return (
+    <div ref={ref} className="bg-story-card rounded-2xl p-6 sm:p-8 border border-story-border card-shadow mb-8">
+      <h4 className="text-sm font-mono text-docker-blue uppercase tracking-wider mb-6 text-center">
+        docker pull Flow
+      </h4>
+      <div className="flex items-center justify-center gap-2 flex-wrap">
+        {steps.map((step, i) => (
+          <div key={step.label} className="flex items-center gap-2">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.2 * i, duration: 0.4 }}
+              className={`bg-${step.color}/10 border border-${step.color}/30 rounded-lg px-3 py-2 text-center min-w-[100px]`}
+            >
+              <div className={`text-${step.color} font-bold text-xs`}>{step.label}</div>
+              <div className="text-text-muted text-[9px] mt-0.5">{step.desc}</div>
+            </motion.div>
+            {i < steps.length - 1 && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.2 * i + 0.1, duration: 0.3 }}
+                className="text-text-muted text-xs font-mono"
+              >
+                &rarr;
+              </motion.span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Registries() {
   return (
@@ -12,10 +61,21 @@ export default function Registries() {
         OCI Image Spec and Registries
       </h3>
       <p className="text-text-secondary leading-relaxed mb-6">
-        The <strong className="text-text-primary">OCI Image Specification</strong> standardizes how container images
-        are built, stored, and distributed. An OCI image consists of a <em>manifest</em> (list of layers),
-        a <em>config</em> (runtime settings), and <em>layer tarballs</em> (filesystem diffs).
+        The{" "}
+        <TermDefinition term="OCI" definition="Open Container Initiative — an industry standard that defines how container images and runtimes should work, so tools from different vendors are compatible" />{" "}
+        Image Specification standardizes how container images are built, stored, and distributed. An OCI image
+        consists of a <em>manifest</em> (list of layers), a <em>config</em> (runtime settings), and{" "}
+        <em>layer tarballs</em> (filesystem diffs).
       </p>
+
+      <AnalogyCard
+        concept="A Registry Is Like an App Store for Servers"
+        analogy="Just like you download apps from the App Store or Google Play, you download container images from a registry. Docker Hub is the biggest public 'app store.' Companies also run private registries — like an internal company app store that only employees can access."
+      />
+
+      <div className="mt-8">
+        <DockerPullFlowDiagram />
+      </div>
 
       <div className="grid sm:grid-cols-3 gap-4 mb-8">
         {[
@@ -70,14 +130,6 @@ export default function Registries() {
           Registries let anyone publish images. A malicious image could mine cryptocurrency or steal
           data from your server. Always use <strong>official images</strong> or images from trusted publishers.
           Scan images for vulnerabilities with <code>docker scout</code> or Trivy before deploying to production.
-        </InfoCard>
-      </div>
-
-      <div className="mt-4">
-        <InfoCard variant="info" title="Image Size Optimization">
-          Use Alpine-based images (5 MB base vs 77 MB Ubuntu). Use multi-stage builds to leave build tools
-          out of the final image. Combine <code>RUN</code> commands to reduce layers. Remove package manager caches
-          in the same layer they&apos;re created (<code>rm -rf /var/lib/apt/lists/*</code>).
         </InfoCard>
       </div>
 

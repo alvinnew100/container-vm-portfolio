@@ -1,10 +1,64 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import CodeBlock from "@/components/story/CodeBlock";
 import InfoCard from "@/components/story/InfoCard";
+import AnalogyCard from "@/components/story/AnalogyCard";
+import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
+
+const SCRIPT_STEPS = [
+  { label: "Download image", line: "wget + tar", color: "docker-blue" },
+  { label: "Create cgroup", line: "cgcreate", color: "docker-teal" },
+  { label: "Set limits", line: "cgset cpu + memory", color: "docker-violet" },
+  { label: "Apply cgroup", line: "cgexec", color: "docker-amber" },
+  { label: "Create namespaces", line: "unshare -fmuipn", color: "docker-blue" },
+  { label: "Change root", line: "chroot", color: "docker-teal" },
+  { label: "Mount /proc", line: "mount -t proc", color: "docker-violet" },
+  { label: "Set hostname", line: "hostname", color: "docker-amber" },
+  { label: "Start shell", line: "/usr/bin/fish", color: "docker-blue" },
+];
+
+function ScriptFlowDiagram() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  return (
+    <div ref={ref} className="bg-story-card rounded-2xl p-6 sm:p-8 border border-story-border card-shadow mb-8">
+      <h4 className="text-sm font-mono text-docker-blue uppercase tracking-wider mb-6 text-center">
+        Container-in-a-Script Flow
+      </h4>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        {SCRIPT_STEPS.map((step, i) => (
+          <div key={step.label} className="flex items-center gap-2">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: 0.1 * i, duration: 0.3 }}
+              className={`bg-${step.color}/10 border border-${step.color}/20 rounded-lg px-2 py-1.5 text-center`}
+            >
+              <div className={`text-${step.color} font-bold text-[9px]`}>{step.label}</div>
+              <div className="text-text-muted text-[8px] font-mono">{step.line}</div>
+            </motion.div>
+            {i < SCRIPT_STEPS.length - 1 && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.1 * i + 0.05, duration: 0.2 }}
+                className="text-text-muted text-[10px]"
+              >
+                &rarr;
+              </motion.span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function NsDemo() {
   return (
@@ -63,45 +117,23 @@ export default function NsDemo() {
             ]}
           />
         </div>
-
-        <div>
-          <h4 className="text-text-primary font-semibold text-sm mb-3">
-            Create a Network namespace manually
-          </h4>
-          <TerminalBlock
-            title="network namespace"
-            lines={[
-              "# Create a named network namespace",
-              "$ sudo ip netns add my-netns",
-              "",
-              "# Run a command inside it",
-              "$ sudo ip netns exec my-netns ip link list",
-              "1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN",
-              "",
-              "# Only loopback exists — completely isolated network stack",
-              "# Add a veth pair to connect it to the host:",
-              "$ sudo ip link add veth-host type veth peer name veth-ns",
-              "$ sudo ip link set veth-ns netns my-netns",
-              "$ sudo ip netns exec my-netns ip addr add 10.0.0.2/24 dev veth-ns",
-              "$ sudo ip netns exec my-netns ip link set veth-ns up",
-            ]}
-          />
-        </div>
       </div>
 
       <div>
-          <h4 className="text-text-primary font-semibold text-sm mb-3">
-            A container in 15 lines of bash
-          </h4>
-          <p className="text-text-secondary text-sm leading-relaxed mb-3">
-            The zine &ldquo;How Containers Work&rdquo; includes this remarkable demo: a working container
-            built from scratch using just shell commands. It demonstrates that containers are not magic &mdash;
-            they&apos;re just Linux kernel features combined together.
-          </p>
-          <CodeBlock
-            language="bash"
-            title="containers-aren't-magic.sh (from the zine, p.6)"
-            code={`wget bit.ly/fish-container -O fish.tar
+        <h4 className="text-text-primary font-semibold text-sm mb-3">
+          A container in 15 lines of bash
+        </h4>
+        <p className="text-text-secondary text-sm leading-relaxed mb-3">
+          This script builds a working container from scratch using just shell commands. It demonstrates
+          that containers are not magic &mdash; they&apos;re just Linux kernel features combined together.
+        </p>
+
+        <ScriptFlowDiagram />
+
+        <CodeBlock
+          language="bash"
+          title="containers-aren't-magic.sh"
+          code={`wget bit.ly/fish-container -O fish.tar
 mkdir container-root; cd container-root
 tar -xf ../fish.tar                          # 1. download & unpack the image
 cgroup_id="cgroup_$(shuf -i 1000-2000 -n 1)" # 2. random cgroup name
@@ -116,43 +148,46 @@ cgexec -g "cpu,cpuacct,memory:$cgroup_id" \\  # 4. use the cgroup
     /bin/mount -t proc proc /proc &&           #    mount /proc
     hostname container-fun-times &&            #    set hostname
     /usr/bin/fish"                             #    start fish shell!`}
-          />
-        </div>
+        />
+      </div>
 
-        <div className="mt-6">
-          <h4 className="text-text-primary font-semibold text-sm mb-3">
-            pivot_root vs chroot
-          </h4>
-          <p className="text-text-secondary text-sm leading-relaxed mb-4">
-            The script above uses <code>chroot</code> for simplicity, but real containers use <code>pivot_root</code>.
-            Why? Programs can break out of a chroot (the old filesystem is still there, just hidden).
-            <code> pivot_root</code> actually <em>unmounts</em> the old filesystem, making it impossible for
-            the container to access it.
-          </p>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="bg-docker-amber/5 rounded-xl p-4 border border-docker-amber/20">
-              <h5 className="text-docker-amber font-semibold text-xs mb-1">chroot</h5>
-              <p className="text-text-secondary text-xs leading-relaxed">
-                Changes the apparent root directory. But the old filesystem is still mounted and
-                accessible — a root process can escape with some tricks.
-              </p>
-            </div>
-            <div className="bg-docker-teal/5 rounded-xl p-4 border border-docker-teal/20">
-              <h5 className="text-docker-teal font-semibold text-xs mb-1">pivot_root</h5>
-              <p className="text-text-secondary text-xs leading-relaxed">
-                Swaps the root filesystem entirely and can unmount the old one. The container
-                literally cannot access the host filesystem. This is what Docker uses.
-              </p>
-            </div>
+      <div className="mt-6">
+        <h4 className="text-text-primary font-semibold text-sm mb-3">
+          pivot_root vs chroot
+        </h4>
+
+        <AnalogyCard
+          concept="chroot vs pivot_root"
+          analogy="chroot is like putting a blindfold on someone in your house — they can't see, but they're still in your house and might find their way around. pivot_root is like teleporting them to a different house entirely and demolishing the bridge back."
+        />
+
+        <div className="grid sm:grid-cols-2 gap-4 mt-4">
+          <div className="bg-docker-amber/5 rounded-xl p-4 border border-docker-amber/20">
+            <h5 className="text-docker-amber font-semibold text-xs mb-1">
+              <TermDefinition term="chroot" definition="changes the apparent root directory for a process — it sees a subfolder as '/'" />
+            </h5>
+            <p className="text-text-secondary text-xs leading-relaxed">
+              The old filesystem is still mounted and accessible — a root process can escape with some tricks.
+              Used in the script above for simplicity.
+            </p>
+          </div>
+          <div className="bg-docker-teal/5 rounded-xl p-4 border border-docker-teal/20">
+            <h5 className="text-docker-teal font-semibold text-xs mb-1">
+              <TermDefinition term="pivot_root" definition="swaps the entire root filesystem and can unmount the old one completely" />
+            </h5>
+            <p className="text-text-secondary text-xs leading-relaxed">
+              The container literally cannot access the host filesystem. This is what Docker actually uses
+              for real containers.
+            </p>
           </div>
         </div>
+      </div>
 
       <div className="mt-6">
         <InfoCard variant="note" title="Key Commands">
           <code>unshare</code> creates new namespaces and runs a program in them. <code>nsenter</code> enters
           existing namespaces (great for debugging containers). <code>ip netns</code> manages named network namespaces.
-          <code> lsns</code> lists all namespaces on the system. Each namespace type has its own man page
-          (e.g., <code>man network_namespaces</code>).
+          <code> lsns</code> lists all namespaces on the system.
         </InfoCard>
       </div>
 

@@ -2,6 +2,8 @@
 
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
+import AnalogyCard from "@/components/story/AnalogyCard";
+import TermDefinition from "@/components/story/TermDefinition";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -47,6 +49,80 @@ function StorageDiagram() {
   );
 }
 
+function MountTypeDiagram() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  const mounts = [
+    {
+      label: "Volume",
+      hostLabel: "/var/lib/docker/volumes/",
+      containerLabel: "/app/data",
+      color: "docker-blue",
+      icon: "🗄",
+    },
+    {
+      label: "Bind Mount",
+      hostLabel: "/home/user/project/src",
+      containerLabel: "/app/src",
+      color: "docker-teal",
+      icon: "🔗",
+    },
+    {
+      label: "tmpfs",
+      hostLabel: "RAM (memory only)",
+      containerLabel: "/app/tmp",
+      color: "docker-violet",
+      icon: "⚡",
+    },
+  ];
+
+  return (
+    <div ref={ref} className="bg-story-card rounded-2xl p-6 sm:p-8 border border-story-border card-shadow mb-8">
+      <h4 className="text-sm font-mono text-docker-blue uppercase tracking-wider mb-6 text-center">
+        Three Mount Types
+      </h4>
+      <div className="space-y-3 max-w-lg mx-auto">
+        {mounts.map((mount, i) => (
+          <motion.div
+            key={mount.label}
+            initial={{ opacity: 0, y: 15 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.2 * i, duration: 0.4 }}
+            className="flex items-center gap-2"
+          >
+            <div className={`bg-${mount.color}/10 border border-${mount.color}/30 rounded-lg px-3 py-2 text-center flex-1`}>
+              <div className="text-text-muted text-[8px] uppercase tracking-wider">Host</div>
+              <div className={`text-${mount.color} text-[10px] font-mono font-bold`}>{mount.hostLabel}</div>
+            </div>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ delay: 0.2 * i + 0.1, duration: 0.3 }}
+              className="text-text-muted text-xs font-mono"
+            >
+              &rarr;
+            </motion.span>
+            <div className={`bg-${mount.color}/10 border border-${mount.color}/30 rounded-lg px-3 py-2 text-center flex-1`}>
+              <div className="text-text-muted text-[8px] uppercase tracking-wider">Container</div>
+              <div className={`text-${mount.color} text-[10px] font-mono font-bold`}>{mount.containerLabel}</div>
+            </div>
+            <div className={`text-${mount.color} font-semibold text-[10px] w-20 text-right`}>{mount.label}</div>
+          </motion.div>
+        ))}
+      </div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ delay: 0.8, duration: 0.5 }}
+        className="text-text-muted text-xs text-center mt-4"
+      >
+        Volumes and bind mounts persist data on the host. tmpfs lives only in memory.
+      </motion.p>
+    </div>
+  );
+}
+
 export default function StorageTypes() {
   return (
     <SectionWrapper id="sec-storage-types" className="max-w-4xl mx-auto px-4 py-16">
@@ -59,7 +135,16 @@ export default function StorageTypes() {
         For persistent data, Docker provides three mount types.
       </p>
 
-      <StorageDiagram />
+      <AnalogyCard
+        concept="Three Types of Storage"
+        analogy="Volumes are like a rented storage unit — Docker manages them, they survive even if you move out (remove the container). Bind mounts are like a shared driveway between your house and the container — both sides see the same files. tmpfs is like a whiteboard — fast to write on, but everything is erased when you stop."
+      />
+
+      <div className="mt-8">
+        <StorageDiagram />
+      </div>
+
+      <MountTypeDiagram />
 
       <div className="grid sm:grid-cols-3 gap-4 mb-8">
         {[
@@ -79,7 +164,13 @@ export default function StorageTypes() {
           },
           {
             title: "tmpfs Mounts",
-            desc: "Stored in host memory only. Never written to disk. Lost when container stops. Fast but size-limited. Good for sensitive data that shouldn't persist.",
+            desc: (
+              <>
+                Stored in host memory only.{" "}
+                <TermDefinition term="tmpfs" definition="a temporary filesystem that lives entirely in RAM — it's extremely fast but all data is lost when the container stops, since nothing is written to disk" />{" "}
+                mounts are never written to disk. Lost when container stops. Good for sensitive data that shouldn&apos;t persist.
+              </>
+            ),
             cmd: "--tmpfs /app/tmp",
             color: "docker-violet",
             best: "Secrets, session data, temp files",
@@ -100,7 +191,7 @@ export default function StorageTypes() {
 
       <InfoCard variant="info" title="Storage Driver: overlay2">
         Docker uses <code>overlay2</code> as the default storage driver on modern Linux. It implements
-        a union filesystem that stacks image layers and the container&apos;s writable layer into a single
+        a union filesystem (as we learned in Lesson 7) that stacks image layers and the container&apos;s writable layer into a single
         merged view. It&apos;s efficient, widely supported, and the recommended driver for production.
       </InfoCard>
     </SectionWrapper>

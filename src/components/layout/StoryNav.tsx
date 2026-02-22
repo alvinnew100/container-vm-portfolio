@@ -11,67 +11,75 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
+  // Primer: Computer Architecture
+  { id: "lesson-0", label: "Primer", isLesson: true, lessonNum: 0, lessonIndex: 0 },
+  { id: "sec-what-is-computer", label: "What Is a Computer", lessonIndex: 0 },
+  { id: "sec-what-is-os", label: "Operating Systems", lessonIndex: 0 },
+  { id: "sec-filesystem", label: "Filesystems", lessonIndex: 0 },
+  { id: "sec-networking", label: "Networking", lessonIndex: 0 },
+  { id: "sec-processes", label: "Processes", lessonIndex: 0 },
+
   // Lesson 1: Why Virtualization?
-  { id: "lesson-1", label: "Why Virtualization?", isLesson: true, lessonNum: 1, lessonIndex: 0 },
-  { id: "sec-why-isolation", label: "Isolation", lessonIndex: 0 },
-  { id: "sec-history", label: "History", lessonIndex: 0 },
+  { id: "lesson-1", label: "Why Virtualization?", isLesson: true, lessonNum: 1, lessonIndex: 1 },
+  { id: "sec-why-isolation", label: "Isolation", lessonIndex: 1 },
+  { id: "sec-history", label: "History", lessonIndex: 1 },
 
   // Lesson 2: Virtual Machines
-  { id: "lesson-2", label: "Virtual Machines", isLesson: true, lessonNum: 2, lessonIndex: 1 },
-  { id: "sec-vm-arch", label: "VM Architecture", lessonIndex: 1 },
-  { id: "sec-hypervisors", label: "Hypervisors", lessonIndex: 1 },
+  { id: "lesson-2", label: "Virtual Machines", isLesson: true, lessonNum: 2, lessonIndex: 2 },
+  { id: "sec-vm-arch", label: "VM Architecture", lessonIndex: 2 },
+  { id: "sec-hypervisors", label: "Hypervisors", lessonIndex: 2 },
 
   // Lesson 3: VM Internals
-  { id: "lesson-3", label: "VM Internals", isLesson: true, lessonNum: 3, lessonIndex: 2 },
-  { id: "sec-cpu-virt", label: "CPU Virtualization", lessonIndex: 2 },
-  { id: "sec-mem-virt", label: "Memory Virt.", lessonIndex: 2 },
-  { id: "sec-io-virt", label: "I/O Virtualization", lessonIndex: 2 },
+  { id: "lesson-3", label: "VM Internals", isLesson: true, lessonNum: 3, lessonIndex: 3 },
+  { id: "sec-cpu-virt", label: "CPU Virtualization", lessonIndex: 3 },
+  { id: "sec-mem-virt", label: "Memory Virt.", lessonIndex: 3 },
+  { id: "sec-io-virt", label: "I/O Virtualization", lessonIndex: 3 },
 
   // Lesson 4: Containers vs VMs
-  { id: "lesson-4", label: "Containers vs VMs", isLesson: true, lessonNum: 4, lessonIndex: 3 },
-  { id: "sec-comparison", label: "Comparison", lessonIndex: 3 },
-  { id: "sec-tradeoffs", label: "Tradeoffs", lessonIndex: 3 },
+  { id: "lesson-4", label: "Containers vs VMs", isLesson: true, lessonNum: 4, lessonIndex: 4 },
+  { id: "sec-comparison", label: "Comparison", lessonIndex: 4 },
+  { id: "sec-tradeoffs", label: "Tradeoffs", lessonIndex: 4 },
 
   // Lesson 5: Linux Namespaces
-  { id: "lesson-5", label: "Namespaces", isLesson: true, lessonNum: 5, lessonIndex: 4 },
-  { id: "sec-namespaces", label: "7 NS Types", lessonIndex: 4 },
-  { id: "sec-ns-demo", label: "NS Demo", lessonIndex: 4 },
+  { id: "lesson-5", label: "Namespaces", isLesson: true, lessonNum: 5, lessonIndex: 5 },
+  { id: "sec-namespaces", label: "7 NS Types", lessonIndex: 5 },
+  { id: "sec-ns-demo", label: "NS Demo", lessonIndex: 5 },
 
   // Lesson 6: Cgroups
-  { id: "lesson-6", label: "Cgroups", isLesson: true, lessonNum: 6, lessonIndex: 5 },
-  { id: "sec-cgroups", label: "Resource Control", lessonIndex: 5 },
-  { id: "sec-cgroup-demo", label: "Cgroup Demo", lessonIndex: 5 },
+  { id: "lesson-6", label: "Cgroups", isLesson: true, lessonNum: 6, lessonIndex: 6 },
+  { id: "sec-cgroups", label: "Resource Control", lessonIndex: 6 },
+  { id: "sec-cgroup-demo", label: "Cgroup Demo", lessonIndex: 6 },
 
   // Lesson 7: Container Images
-  { id: "lesson-7", label: "Container Images", isLesson: true, lessonNum: 7, lessonIndex: 6 },
-  { id: "sec-layers", label: "Image Layers", lessonIndex: 6 },
-  { id: "sec-registries", label: "Registries", lessonIndex: 6 },
+  { id: "lesson-7", label: "Container Images", isLesson: true, lessonNum: 7, lessonIndex: 7 },
+  { id: "sec-layers", label: "Image Layers", lessonIndex: 7 },
+  { id: "sec-registries", label: "Registries", lessonIndex: 7 },
 
   // Lesson 8: Docker Architecture
-  { id: "lesson-8", label: "Docker Architecture", isLesson: true, lessonNum: 8, lessonIndex: 7 },
-  { id: "sec-docker-arch", label: "Architecture", lessonIndex: 7 },
-  { id: "sec-docker-objects", label: "Docker Objects", lessonIndex: 7 },
+  { id: "lesson-8", label: "Docker Architecture", isLesson: true, lessonNum: 8, lessonIndex: 8 },
+  { id: "sec-docker-arch", label: "Architecture", lessonIndex: 8 },
+  { id: "sec-docker-objects", label: "Docker Objects", lessonIndex: 8 },
 
   // Lesson 9: Dockerfile
-  { id: "lesson-9", label: "Dockerfile", isLesson: true, lessonNum: 9, lessonIndex: 8 },
-  { id: "sec-dockerfile-basics", label: "Instructions", lessonIndex: 8 },
-  { id: "sec-multistage", label: "Multi-stage", lessonIndex: 8 },
+  { id: "lesson-9", label: "Dockerfile", isLesson: true, lessonNum: 9, lessonIndex: 9 },
+  { id: "sec-dockerfile-basics", label: "Instructions", lessonIndex: 9 },
+  { id: "sec-multistage", label: "Multi-stage", lessonIndex: 9 },
 
   // Lesson 10: Docker Networking
-  { id: "lesson-10", label: "Networking", isLesson: true, lessonNum: 10, lessonIndex: 9 },
-  { id: "sec-network-types", label: "Network Types", lessonIndex: 9 },
-  { id: "sec-port-mapping", label: "Port Mapping", lessonIndex: 9 },
-  { id: "sec-dns", label: "DNS", lessonIndex: 9 },
+  { id: "lesson-10", label: "Networking", isLesson: true, lessonNum: 10, lessonIndex: 10 },
+  { id: "sec-network-types", label: "Network Types", lessonIndex: 10 },
+  { id: "sec-port-mapping", label: "Port Mapping", lessonIndex: 10 },
+  { id: "sec-dns", label: "DNS", lessonIndex: 10 },
 
   // Lesson 11: Docker Storage
-  { id: "lesson-11", label: "Storage", isLesson: true, lessonNum: 11, lessonIndex: 10 },
-  { id: "sec-storage-types", label: "Storage Types", lessonIndex: 10 },
-  { id: "sec-volumes", label: "Volumes", lessonIndex: 10 },
+  { id: "lesson-11", label: "Storage", isLesson: true, lessonNum: 11, lessonIndex: 11 },
+  { id: "sec-storage-types", label: "Storage Types", lessonIndex: 11 },
+  { id: "sec-volumes", label: "Volumes", lessonIndex: 11 },
 
   // Lesson 12: Docker Compose
-  { id: "lesson-12", label: "Docker Compose", isLesson: true, lessonNum: 12, lessonIndex: 11 },
-  { id: "sec-compose-basics", label: "Compose Basics", lessonIndex: 11 },
-  { id: "sec-compose-patterns", label: "Patterns", lessonIndex: 11 },
+  { id: "lesson-12", label: "Docker Compose", isLesson: true, lessonNum: 12, lessonIndex: 12 },
+  { id: "sec-compose-basics", label: "Compose Basics", lessonIndex: 12 },
+  { id: "sec-compose-patterns", label: "Patterns", lessonIndex: 12 },
 ];
 
 export default function StoryNav() {
@@ -145,7 +153,7 @@ export default function StoryNav() {
                     }`}
                   />
                   <span className="text-[11px] font-semibold truncate">
-                    {item.lessonNum}. {item.label}
+                    {item.lessonNum === 0 ? "" : `${item.lessonNum}. `}{item.label}
                   </span>
                 </button>
               );
@@ -217,7 +225,7 @@ export default function StoryNav() {
                       }`
                 }`}
               >
-                {item.isLesson ? `${item.lessonNum}. ${item.label}` : item.label}
+                {item.isLesson ? (item.lessonNum === 0 ? item.label : `${item.lessonNum}. ${item.label}`) : item.label}
               </button>
             ))}
           </div>

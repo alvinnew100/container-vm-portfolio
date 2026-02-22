@@ -1,8 +1,56 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
+import TermDefinition from "@/components/story/TermDefinition";
+
+function PortMappingDiagram() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  const steps = [
+    { label: "Host:8080", desc: "Incoming request", color: "docker-blue" },
+    { label: "iptables DNAT", desc: "Rewrites destination", color: "docker-violet" },
+    { label: "docker0 bridge", desc: "Forwards packet", color: "docker-teal" },
+    { label: "Container:80", desc: "nginx receives", color: "docker-amber" },
+  ];
+
+  return (
+    <div ref={ref} className="bg-story-card rounded-2xl p-6 sm:p-8 border border-story-border card-shadow mb-8">
+      <h4 className="text-sm font-mono text-docker-blue uppercase tracking-wider mb-6 text-center">
+        Port Mapping: Host:8080 &rarr; Container:80
+      </h4>
+      <div className="flex items-center justify-center gap-2 flex-wrap">
+        {steps.map((step, i) => (
+          <div key={step.label} className="flex items-center gap-2">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.2 * i, duration: 0.4 }}
+              className={`bg-${step.color}/10 border border-${step.color}/30 rounded-lg px-3 py-2 text-center min-w-[90px]`}
+            >
+              <div className={`text-${step.color} font-bold text-xs`}>{step.label}</div>
+              <div className="text-text-muted text-[9px] mt-0.5">{step.desc}</div>
+            </motion.div>
+            {i < steps.length - 1 && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.2 * i + 0.1, duration: 0.3 }}
+                className="text-text-muted text-xs font-mono"
+              >
+                &rarr;
+              </motion.span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function PortMapping() {
   return (
@@ -12,7 +60,16 @@ export default function PortMapping() {
       </h3>
       <p className="text-text-secondary leading-relaxed mb-6">
         By default, container ports are not accessible from outside the Docker network. The <code>-p</code> flag
-        creates iptables DNAT rules that forward traffic from a host port to a container port.
+        creates{" "}
+        <TermDefinition term="DNAT" definition="Destination NAT — an iptables rule that rewrites the destination address of incoming packets, forwarding traffic from one port to another" />{" "}
+        rules that forward traffic from a host port to a container port.
+      </p>
+
+      <PortMappingDiagram />
+
+      <p className="text-text-secondary text-sm leading-relaxed mb-6">
+        <TermDefinition term="0.0.0.0" definition="a special IP that means 'all network interfaces' — binding to 0.0.0.0 makes a port accessible from any network, not just localhost" />{" "}
+        is the default bind address. Use <code>127.0.0.1</code> to restrict access to the local machine only.
       </p>
 
       <div className="bg-story-card rounded-2xl border border-story-border card-shadow overflow-hidden mb-8">
@@ -56,7 +113,7 @@ export default function PortMapping() {
           "",
           "# Access from the host",
           "$ curl localhost:8080",
-          "<!DOCTYPE html>...<h1>Welcome to nginx!</h1>...",
+          '<!DOCTYPE html>...<h1>Welcome to nginx!</h1>...',
           "",
           "# See the iptables rules Docker created",
           "$ sudo iptables -t nat -L DOCKER -n",
