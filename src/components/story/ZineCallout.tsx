@@ -18,12 +18,12 @@ export default function ZineCallout({ page, topic }: ZineCalloutProps) {
         <p className="text-text-secondary text-xs leading-relaxed">
           This section draws from <em>&ldquo;How Containers Work&rdquo;</em> by Julia Evans ({topic}).{" "}
           <a
-            href="/container-vm-portfolio/how-containers-work-wizardzines.pdf"
+            href="https://wizardzines.com/zines/containers/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-docker-violet hover:underline font-medium"
           >
-            Download the full zine (PDF)
+            Get the zine at wizardzines.com
           </a>
         </p>
       </div>

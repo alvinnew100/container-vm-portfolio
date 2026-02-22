@@ -33,15 +33,6 @@ export default function StoryFooter() {
           >
             &ldquo;How Containers Work&rdquo; by Julia Evans
           </a>
-          {" "}
-          <a
-            href="/container-vm-portfolio/how-containers-work-wizardzines.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-docker-violet hover:underline"
-          >
-            (PDF)
-          </a>
         </p>
       </div>
     </footer>
