@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function VolumeLifecycleDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -188,6 +189,7 @@ function HostContainerView() {
 
 export default function Volumes() {
   return (
+    <>
     <SectionWrapper id="sec-volumes" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Working with Volumes
@@ -254,5 +256,15 @@ export default function Volumes() {
         Run <code>docker volume prune</code> periodically to clean up unused volumes.
       </InfoCard>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson11-persist-kc1"
+        question="What happens to an anonymous volume when you run 'docker rm' on its container?"
+        options={["It's removed with the container", "It persists until manual cleanup"]}
+        correctIndex={0}
+        explanation="Anonymous volumes (created without a name via -v /data) are removed when the container is removed with docker rm. Named volumes persist. Use 'docker rm -v' explicitly or 'docker volume prune' to clean up orphaned volumes."
+        hint="Anonymous vs named volumes have different lifecycle behaviors."
+      />
+    </>
   );
 }

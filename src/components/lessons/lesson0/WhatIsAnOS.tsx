@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 const LAYERS = [
   {
@@ -154,6 +155,15 @@ export default function WhatIsAnOS() {
         but use special features to isolate processes. Understanding Ring 0 vs Ring 3 is
         the foundation for understanding both.
       </InfoCard>
+
+      <KnowledgeCheck
+        id="lesson0-os-kc1"
+        question="Which ring does the kernel run in?"
+        options={["Ring 0", "Ring 3"]}
+        correctIndex={0}
+        explanation="The kernel runs in Ring 0 (kernel mode) with full hardware access. User applications run in Ring 3 (user mode) with restricted access."
+        hint="The kernel needs unrestricted access to hardware — which ring provides that?"
+      />
     </SectionWrapper>
   );
 }

@@ -6,6 +6,8 @@ import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import ZineCallout from "@/components/story/ZineCallout";
+import DragSortChallenge from "@/components/story/DragSortChallenge";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -59,6 +61,7 @@ function LayerStackDiagram() {
 
 export default function ImageLayers() {
   return (
+    <>
     <SectionWrapper id="sec-layers" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Container Images — Layers and Union Filesystems
@@ -164,5 +167,30 @@ export default function ImageLayers() {
         <ZineCallout page="10-11" topic="layers as directories, overlay filesystems, mount -t overlay" />
       </div>
     </SectionWrapper>
+
+      <DragSortChallenge
+        id="lesson7-layers-drag1"
+        prompt="Order these Dockerfile instructions as they would appear in a typical Dockerfile (top to bottom):"
+        items={[
+          { id: "from", label: "FROM node:20-alpine", detail: "Base image" },
+          { id: "workdir", label: "WORKDIR /app", detail: "Set working directory" },
+          { id: "copy-pkg", label: "COPY package*.json ./", detail: "Copy dependency manifest" },
+          { id: "run-install", label: "RUN npm install", detail: "Install dependencies" },
+          { id: "copy-src", label: "COPY . .", detail: "Copy application source" },
+          { id: "cmd", label: "CMD [\"node\", \"server.js\"]", detail: "Default command" },
+        ]}
+        correctOrder={["from", "workdir", "copy-pkg", "run-install", "copy-src", "cmd"]}
+        hint="Dockerfile instructions that change less frequently should come first for better layer caching."
+      />
+
+      <KnowledgeCheck
+        id="lesson7-cow-kc1"
+        question="Container X modifies /etc/config which exists in a read-only image layer. What happens to other containers using the same image?"
+        options={["They still see the original file — changes are copy-on-write", "They see the modified file"]}
+        correctIndex={0}
+        explanation="OverlayFS uses copy-on-write (CoW). When Container X modifies a file from a read-only layer, it's copied to the container's writable layer first. Other containers still read from the original layer — they're completely unaffected."
+        hint="Image layers are read-only. Each container gets its own thin writable layer on top."
+      />
+    </>
   );
 }

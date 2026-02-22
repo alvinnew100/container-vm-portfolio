@@ -9,6 +9,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 const SCRIPT_STEPS = [
   { label: "Download image", line: "wget + tar", color: "docker-blue" },
@@ -62,6 +63,7 @@ function ScriptFlowDiagram() {
 
 export default function NsDemo() {
   return (
+    <>
     <SectionWrapper id="sec-ns-demo" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Hands-On: unshare and nsenter
@@ -195,5 +197,15 @@ cgexec -g "cpu,cpuacct,memory:$cgroup_id" \\  # 4. use the cgroup
         <ZineCallout page="6, 9, 15" topic="containers aren't magic script, pivot_root, namespace system calls" />
       </div>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson5-pid-kc1"
+        question="A container's main process is PID 1 inside the container but PID 4523 on the host. What happens if PID 1 exits?"
+        options={["The container dies — all its processes are killed", "Nothing — another process becomes PID 1"]}
+        correctIndex={0}
+        explanation="PID 1 is the init process of the PID namespace. When it exits, the kernel sends SIGKILL to all remaining processes in that namespace, effectively destroying the container. This is why 'docker stop' sends SIGTERM to PID 1."
+        hint="PID 1 has a special role — it's the parent of all processes in the namespace."
+      />
+    </>
   );
 }

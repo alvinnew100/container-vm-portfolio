@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import CodeBlock from "@/components/story/CodeBlock";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function SizeComparisonBars() {
   const ref = useRef<HTMLDivElement>(null);
@@ -107,6 +108,7 @@ function StageFlowDiagram() {
 
 export default function MultiStage() {
   return (
+    <>
     <SectionWrapper id="sec-multistage" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Multi-Stage Builds
@@ -161,5 +163,15 @@ ENTRYPOINT ["./server"]`}
         </InfoCard>
       </div>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson9-optimize-kc1"
+        question="Why should you COPY package.json before COPY src/ in a Dockerfile?"
+        options={["To cache npm install when only source code changes", "Because package.json is smaller"]}
+        correctIndex={0}
+        explanation="If you COPY everything at once, changing any source file invalidates the npm install cache. By copying package.json first and running npm install, that layer is cached as long as dependencies don't change — only the source copy layer needs rebuilding."
+        hint="Docker rebuilds from the first changed layer upward."
+      />
+    </>
   );
 }

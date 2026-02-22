@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function IoPathDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -160,6 +161,15 @@ export default function IoVirt() {
           into a single trap. Most Linux distros include virtio drivers by default.
         </InfoCard>
       </div>
+
+      <KnowledgeCheck
+        id="lesson3-io-kc1"
+        question="Which I/O virtualization method gives near-native performance by assigning a physical device directly to a VM?"
+        options={["SR-IOV", "Emulation"]}
+        correctIndex={0}
+        explanation="SR-IOV (Single Root I/O Virtualization) creates virtual functions (VFs) from a physical NIC, each assignable directly to a VM via PCIe passthrough. This bypasses the hypervisor for data-path I/O, giving near-native performance."
+        hint="This method splits a single physical NIC into multiple virtual functions."
+      />
     </SectionWrapper>
   );
 }

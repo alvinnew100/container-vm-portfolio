@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function CgroupHierarchyDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -131,6 +132,7 @@ function DockerToCgroupFlow() {
 
 export default function CgroupDemo() {
   return (
+    <>
     <SectionWrapper id="sec-cgroup-demo" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Cgroup v1 vs v2
@@ -203,5 +205,15 @@ export default function CgroupDemo() {
         Docker, containerd, and other runtimes are just convenient tools for setting these up correctly.
       </InfoCard>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson6-limits-kc1"
+        question="When a container hits its memory limit, the kernel OOM-kills it. What happens when it hits its CPU limit?"
+        options={["The process is throttled (slowed down)", "The process is killed"]}
+        correctIndex={0}
+        explanation="Memory limits are hard: exceed them and you're OOM-killed. CPU limits are soft: the CFS scheduler simply throttles the process — it stops running until the next period. The process survives but runs slower."
+        hint="Memory and CPU limits are enforced differently — one is fatal, the other just slows you down."
+      />
+    </>
   );
 }

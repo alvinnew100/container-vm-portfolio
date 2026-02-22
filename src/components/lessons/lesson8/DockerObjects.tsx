@@ -7,6 +7,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 const DOCKER_OBJECTS = [
   {
@@ -69,6 +70,7 @@ function ObjectGrid() {
 
 export default function DockerObjects() {
   return (
+    <>
     <SectionWrapper id="sec-docker-objects" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Docker Objects
@@ -158,5 +160,15 @@ export default function DockerObjects() {
         <ZineCallout page="7-8, 20-21" topic="containers = processes, capabilities, seccomp-BPF" />
       </div>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson8-obj-kc1"
+        question="Which Docker object persists data after container removal?"
+        options={["Volume", "Container layer"]}
+        correctIndex={0}
+        explanation="Volumes exist outside the container's filesystem and persist after 'docker rm'. The container's writable layer (where non-volume changes are stored) is deleted when the container is removed."
+        hint="One of these lives inside the container, the other is managed separately by Docker."
+      />
+    </>
   );
 }

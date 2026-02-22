@@ -6,6 +6,8 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import DragSortChallenge from "@/components/story/DragSortChallenge";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function AnimatedTimeline() {
   const ref = useRef<HTMLDivElement>(null);
@@ -178,6 +180,22 @@ export default function WhyVirtualization() {
           lightweight containers. Each step traded some isolation for better efficiency and developer
           experience.
         </InfoCard>
+
+        <DragSortChallenge
+          id="lesson1-timeline-drag1"
+          prompt="Order these virtualization milestones from earliest to most recent:"
+          items={[
+            { id: "ibm", label: "IBM Mainframe Partitioning", detail: "1960s" },
+            { id: "vmware", label: "VMware Founded", detail: "1998" },
+            { id: "xen", label: "Xen Hypervisor", detail: "2003" },
+            { id: "kvm", label: "KVM in Linux Kernel", detail: "2007" },
+            { id: "lxc", label: "Linux Containers (LXC)", detail: "2008" },
+            { id: "docker", label: "Docker Launches", detail: "2013" },
+            { id: "k8s", label: "Kubernetes 1.0", detail: "2015" },
+          ]}
+          correctOrder={["ibm", "vmware", "xen", "kvm", "lxc", "docker", "k8s"]}
+          hint="The timeline on this page shows you the exact years for each milestone."
+        />
       </SectionWrapper>
     </>
   );

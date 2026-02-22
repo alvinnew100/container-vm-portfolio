@@ -3,6 +3,7 @@
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -96,6 +97,7 @@ function NetworkDiagram() {
 
 export default function NetworkTypes() {
   return (
+    <>
     <SectionWrapper id="sec-network-types" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Docker Networking
@@ -146,5 +148,15 @@ export default function NetworkTypes() {
         4. Assigns an IP from the bridge&apos;s subnet. 5. Adds iptables NAT rules for outbound traffic.
       </InfoCard>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson10-bridge-kc1"
+        question="On Docker's default bridge network, containers communicate using:"
+        options={["IP addresses only (no DNS)", "Container names via built-in DNS"]}
+        correctIndex={0}
+        explanation="The default bridge network does NOT provide automatic DNS resolution between containers. You must use IP addresses or create a user-defined bridge network for DNS-based service discovery."
+        hint="The default bridge and user-defined bridges have different DNS behaviors."
+      />
+    </>
   );
 }

@@ -8,6 +8,7 @@ import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import ZineCallout from "@/components/story/ZineCallout";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function DockerPullFlowDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -56,6 +57,7 @@ function DockerPullFlowDiagram() {
 
 export default function Registries() {
   return (
+    <>
     <SectionWrapper id="sec-registries" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         OCI Image Spec and Registries
@@ -137,5 +139,15 @@ export default function Registries() {
         <ZineCallout page="5, 12" topic="images as tarballs, container registries, image safety" />
       </div>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson7-reg-kc1"
+        question="When you run 'docker pull nginx', which registry does Docker pull from by default?"
+        options={["Docker Hub (docker.io)", "GitHub Container Registry (ghcr.io)"]}
+        correctIndex={0}
+        explanation="Docker Hub (docker.io) is the default public registry. When you omit the registry prefix, Docker automatically pulls from Docker Hub. To use other registries, you must specify the full path (e.g., ghcr.io/owner/image)."
+        hint="The default registry is the one Docker was originally built around."
+      />
+    </>
   );
 }

@@ -7,6 +7,7 @@ import CodeBlock from "@/components/story/CodeBlock";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import FillInBlank from "@/components/story/FillInBlank";
 
 function ReverseProxyDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -123,6 +124,7 @@ function StartupSequenceDiagram() {
 
 export default function ComposePatterns() {
   return (
+    <>
     <SectionWrapper id="sec-compose-patterns" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Common Compose Patterns
@@ -260,5 +262,16 @@ services:
         </InfoCard>
       </div>
     </SectionWrapper>
+
+      <FillInBlank
+        id="lesson12-dns-fill1"
+        prompt="In Docker Compose, service 'web' can reach service 'db' using the hostname {blank}."
+        blanks={[
+          { answer: "db", placeholder: "hostname" },
+        ]}
+        explanation="Docker Compose creates a user-defined network and registers each service name as a DNS hostname. So 'web' can connect to 'db' simply using 'db' as the hostname — Docker's embedded DNS resolves it to the container's IP."
+        hint="The service name in docker-compose.yml doubles as a DNS hostname."
+      />
+    </>
   );
 }

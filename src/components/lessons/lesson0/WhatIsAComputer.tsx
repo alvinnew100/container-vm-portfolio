@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 const COMPONENTS = [
   {
@@ -135,6 +136,15 @@ export default function WhatIsAComputer() {
         controlling how programs access these four components. Understanding the hardware
         makes everything else click.
       </InfoCard>
+
+      <KnowledgeCheck
+        id="lesson0-hw-kc1"
+        question="Which component executes instructions?"
+        options={["CPU", "RAM"]}
+        correctIndex={0}
+        explanation="The CPU (Central Processing Unit) fetches, decodes, and executes instructions. RAM temporarily stores data the CPU is actively working with."
+        hint="Think about which component is called the 'brain' of the computer."
+      />
     </SectionWrapper>
   );
 }

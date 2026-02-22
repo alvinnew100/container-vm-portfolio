@@ -7,6 +7,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 const NS_TYPES = [
   {
@@ -132,6 +133,7 @@ export default function Namespaces() {
   const ns = NS_TYPES[selected];
 
   return (
+    <>
     <SectionWrapper id="sec-namespaces" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Linux Namespaces — The Foundation of Container Isolation
@@ -210,5 +212,15 @@ export default function Namespaces() {
         <ZineCallout page="14-18" topic="namespaces, PID trees, user namespaces, network namespaces" />
       </div>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson5-ns-kc1"
+        question="How many Linux namespace types exist for container isolation?"
+        options={["7", "3"]}
+        correctIndex={0}
+        explanation="Linux has 7 namespace types: PID (process IDs), NET (networking), MNT (filesystem mounts), UTS (hostname), IPC (inter-process communication), USER (user/group IDs), and cgroup (resource limits). Together they create complete process isolation."
+        hint="Count the namespace types listed on this page — each isolates a different kernel resource."
+      />
+    </>
   );
 }

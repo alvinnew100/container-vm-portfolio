@@ -2,6 +2,7 @@
 
 import LessonDivider from "@/components/story/LessonDivider";
 import LessonObjectives from "@/components/story/LessonObjectives";
+import ProgressBar from "@/components/story/ProgressBar";
 
 // Hero
 import Hero from "@/components/lessons/lesson1/Hero";
@@ -77,6 +78,7 @@ export default function HomePage() {
         "Know the basics of networking: IP addresses, ports, DNS, NAT",
         "Understand processes, PIDs, and fork/exec — because containers ARE processes",
       ]} />
+      <ProgressBar lessonPrefix="lesson0-" total={5} label="Primer Progress" />
       <WhatIsAComputer />
       <WhatIsAnOS />
       <FilesystemBasics />
@@ -89,6 +91,7 @@ export default function HomePage() {
         "Understand why isolation matters for running multiple applications",
         "Explain the evolution from physical servers to VMs to containers",
       ]} />
+      <ProgressBar lessonPrefix="lesson1-" total={1} />
       <WhyVirtualization />
 
       {/* ===================== LESSON 2: VIRTUAL MACHINES ===================== */}
@@ -98,6 +101,7 @@ export default function HomePage() {
         "Describe VM components: vCPU, vRAM, vNIC, vDisk",
         "Understand the VM lifecycle: create, start, snapshot, migrate, destroy",
       ]} />
+      <ProgressBar lessonPrefix="lesson2-" total={2} />
       <VmArchitecture />
       <Hypervisors />
 
@@ -108,6 +112,7 @@ export default function HomePage() {
         "Compare shadow page tables with EPT/NPT for memory virtualization",
         "Compare I/O virtualization approaches: emulation, paravirtual (virtio), SR-IOV",
       ]} />
+      <ProgressBar lessonPrefix="lesson3-" total={3} />
       <CpuVirt />
       <MemVirt />
       <IoVirt />
@@ -119,6 +124,7 @@ export default function HomePage() {
         "Evaluate tradeoffs in startup time, memory, isolation, and density",
         "Choose the right technology for a given use case",
       ]} />
+      <ProgressBar lessonPrefix="lesson4-" total={2} />
       <Comparison />
       <Tradeoffs />
 
@@ -128,6 +134,7 @@ export default function HomePage() {
         "Name all 7 namespace types and explain what each isolates",
         "Demonstrate creating a namespace with unshare and entering one with nsenter",
       ]} />
+      <ProgressBar lessonPrefix="lesson5-" total={2} />
       <Namespaces />
       <NsDemo />
 
@@ -137,6 +144,7 @@ export default function HomePage() {
         "Explain how cgroups limit CPU and memory for groups of processes",
         "Distinguish cgroup v1 (per-controller hierarchy) from v2 (unified hierarchy)",
       ]} />
+      <ProgressBar lessonPrefix="lesson6-" total={2} />
       <Cgroups />
       <CgroupDemo />
 
@@ -147,6 +155,7 @@ export default function HomePage() {
         "Understand layer caching for build optimization",
         "Pull images from registries and inspect their layers",
       ]} />
+      <ProgressBar lessonPrefix="lesson7-" total={3} />
       <ImageLayers />
       <Registries />
 
@@ -156,6 +165,7 @@ export default function HomePage() {
         "Trace a docker run command through the entire stack: CLI → dockerd → containerd → runc",
         "Identify each component's role in the Docker architecture",
       ]} />
+      <ProgressBar lessonPrefix="lesson8-" total={2} />
       <DockerArch />
       <DockerObjects />
 
@@ -165,6 +175,7 @@ export default function HomePage() {
         "Write a production-ready Dockerfile using key instructions (FROM, RUN, COPY, CMD, ENTRYPOINT)",
         "Use multi-stage builds to dramatically reduce image size",
       ]} />
+      <ProgressBar lessonPrefix="lesson9-" total={2} />
       <DockerfileBasics />
       <MultiStage />
 
@@ -175,6 +186,7 @@ export default function HomePage() {
         "Configure port mapping with the -p flag",
         "Use custom bridge networks for DNS-based service discovery",
       ]} />
+      <ProgressBar lessonPrefix="lesson10-" total={3} />
       <NetworkTypes />
       <PortMapping />
       <Dns />
@@ -185,6 +197,7 @@ export default function HomePage() {
         "Choose the right storage type (volumes, bind mounts, tmpfs) for a given use case",
         "Explain why volumes survive container removal and how to manage them",
       ]} />
+      <ProgressBar lessonPrefix="lesson11-" total={2} />
       <StorageTypes />
       <Volumes />
 
@@ -195,6 +208,7 @@ export default function HomePage() {
         "Manage the container lifecycle with Compose commands (up, down, build, logs)",
         "Apply common Compose patterns for production-ready applications",
       ]} />
+      <ProgressBar lessonPrefix="lesson12-" total={2} />
       <ComposeBasics />
       <ComposePatterns />
     </div>

@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function RingDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -165,6 +166,15 @@ export default function CpuVirt() {
         <TermDefinition term="VMCS" definition="Virtual Machine Control Structure — a data structure in memory that stores all guest and host CPU state for fast VM switching" />{" "}
         stores all the guest/host state for fast switching. Modern CPUs achieve VM exits in ~1 microsecond.
       </InfoCard>
+
+      <KnowledgeCheck
+        id="lesson3-cpu-kc1"
+        question="What happens when a guest OS executes a privileged instruction with hardware-assisted virtualization (VT-x)?"
+        options={["VM exit to hypervisor", "Instruction executes normally"]}
+        correctIndex={0}
+        explanation="When a guest OS in VMX non-root mode executes a privileged instruction, the CPU triggers a VM exit — control transfers to the hypervisor. The hypervisor handles the instruction and resumes the guest with a VM entry."
+        hint="The CPU has two modes: VMX root (hypervisor) and VMX non-root (guest). Privileged instructions can't run in non-root mode."
+      />
     </SectionWrapper>
   );
 }

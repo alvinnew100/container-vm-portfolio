@@ -3,6 +3,7 @@
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import FillInBlank from "@/components/story/FillInBlank";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
@@ -80,6 +81,7 @@ function ArchFlowDiagram() {
 
 export default function DockerArch() {
   return (
+    <>
     <SectionWrapper id="sec-docker-arch" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Docker Architecture
@@ -141,5 +143,14 @@ export default function DockerArch() {
         then exec&apos;s the nginx process. 6. runc exits; shim becomes the container&apos;s parent process.
       </InfoCard>
     </SectionWrapper>
+
+      <FillInBlank
+        id="lesson8-arch-fill1"
+        prompt="The Docker stack from top to bottom: docker CLI → {blank} → containerd → runc → kernel"
+        blanks={[{ answer: "dockerd", placeholder: "?" }]}
+        explanation="The full stack: docker CLI sends REST API calls to dockerd (the Docker daemon). dockerd manages images, networks, and volumes, then delegates container lifecycle to containerd. containerd uses runc (the OCI runtime) to create namespaces and cgroups via the kernel."
+        hint="This is the Docker daemon — it runs as a background service and exposes the Docker API."
+      />
+    </>
   );
 }

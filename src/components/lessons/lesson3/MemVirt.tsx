@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import FillInBlank from "@/components/story/FillInBlank";
 
 function AddressTranslationDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -163,6 +164,14 @@ export default function MemVirt() {
         Modern CPUs mitigate this with large TLBs and VPID (Virtual Processor ID) tags that avoid
         flushing the TLB on VM switches.
       </InfoCard>
+
+      <FillInBlank
+        id="lesson3-mem-fill1"
+        prompt="In two-level address translation, guest virtual addresses are translated to {blank}, then to host physical addresses."
+        blanks={[{ answer: "guest physical addresses", placeholder: "?" }]}
+        explanation="The translation chain is: Guest Virtual Address (GVA) → Guest Physical Address (GPA) via guest page tables → Host Physical Address (HPA) via EPT/NPT. The guest thinks GPAs are real hardware addresses."
+        hint="The guest OS manages its own page tables mapping virtual to what IT thinks is physical memory."
+      />
     </SectionWrapper>
   );
 }

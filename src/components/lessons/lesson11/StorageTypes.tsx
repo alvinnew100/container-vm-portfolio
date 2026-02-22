@@ -4,6 +4,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -125,6 +126,7 @@ function MountTypeDiagram() {
 
 export default function StorageTypes() {
   return (
+    <>
     <SectionWrapper id="sec-storage-types" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Docker Storage
@@ -195,5 +197,15 @@ export default function StorageTypes() {
         merged view. It&apos;s efficient, widely supported, and the recommended driver for production.
       </InfoCard>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson11-vol-kc1"
+        question="Which Docker storage option is managed by Docker and persists after container removal?"
+        options={["Named volumes", "Container's writable layer"]}
+        correctIndex={0}
+        explanation="Named volumes (docker volume create) are managed by Docker and persist independently of containers. The container's writable layer is deleted when the container is removed with docker rm."
+        hint="One of these survives 'docker rm'."
+      />
+    </>
   );
 }

@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 const DEVICES = [
   { label: "Laptop", ip: "192.168.1.10", x: 10, y: 60 },
@@ -181,6 +182,15 @@ export default function Networking101() {
         Docker creates virtual networks, virtual ethernet cables (veth pairs), and uses
         iptables for port mapping. All of these build directly on the concepts introduced here.
       </InfoCard>
+
+      <KnowledgeCheck
+        id="lesson0-net-kc1"
+        question="When a laptop behind a router sends a packet to a web server, what source IP does the server see?"
+        options={["Router's public IP", "Laptop's private IP"]}
+        correctIndex={0}
+        explanation="NAT (Network Address Translation) replaces the laptop's private IP (e.g., 192.168.1.5) with the router's public IP before sending packets to the internet. The server only sees the router's public address."
+        hint="Private IP addresses (192.168.x.x) can't be routed on the public internet."
+      />
     </SectionWrapper>
   );
 }

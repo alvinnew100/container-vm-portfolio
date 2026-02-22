@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function DnsFlowDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -61,6 +62,7 @@ function DnsFlowDiagram() {
 
 export default function Dns() {
   return (
+    <>
     <SectionWrapper id="sec-dns" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Container DNS Resolution
@@ -121,5 +123,15 @@ export default function Dns() {
         containers dynamically.
       </InfoCard>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson10-dns-kc1"
+        question="How does Docker resolve service names like 'db' to IP addresses on user-defined networks?"
+        options={["Embedded DNS server at 127.0.0.11", "The host's /etc/resolv.conf"]}
+        correctIndex={0}
+        explanation="Docker runs an embedded DNS server at 127.0.0.11 for user-defined networks. Containers on the same user-defined network can reach each other by service name. This DNS server is NOT available on the default bridge."
+        hint="Docker has its own DNS server for custom networks."
+      />
+    </>
   );
 }

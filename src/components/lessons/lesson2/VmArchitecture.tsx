@@ -4,6 +4,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -177,6 +178,15 @@ export default function VmArchitecture() {
         lets you instantly roll back to a known-good state. Break something during testing? Restore the snapshot
         in seconds. This is one of the biggest advantages of VMs over bare metal.
       </InfoCard>
+
+      <KnowledgeCheck
+        id="lesson2-stack-kc1"
+        question="In a VM stack, what sits between the hardware and guest operating systems?"
+        options={["Hypervisor", "Container runtime"]}
+        correctIndex={0}
+        explanation="The hypervisor sits between the physical hardware and the guest VMs. It virtualizes hardware resources (CPU, memory, I/O) so each VM believes it has its own dedicated hardware."
+        hint="This layer's job is to create and manage virtual machines."
+      />
     </SectionWrapper>
   );
 }

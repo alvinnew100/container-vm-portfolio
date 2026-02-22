@@ -7,6 +7,7 @@ import CodeBlock from "@/components/story/CodeBlock";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 const INSTRUCTIONS = [
   { cmd: "FROM", layer: "Base Image", color: "docker-violet" },
@@ -54,6 +55,7 @@ function LayerBuilderDiagram() {
 
 export default function DockerfileBasics() {
   return (
+    <>
     <SectionWrapper id="sec-dockerfile-basics" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Dockerfile Instructions
@@ -146,5 +148,15 @@ CMD ["node", "src/server.js"]`}
         </InfoCard>
       </div>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson9-cache-kc1"
+        question="In a Dockerfile, if you change Layer 4, which layers need to be rebuilt?"
+        options={["Layer 4 and all layers above it", "Only Layer 4"]}
+        correctIndex={0}
+        explanation="Docker layer caching is invalidated from the changed layer upward. If Layer 4 changes, layers 4, 5, 6, etc. must all be rebuilt. This is why you should put frequently changing instructions (like COPY src/) later in the Dockerfile."
+        hint="Think about how Docker caches work — changes cascade upward."
+      />
+    </>
   );
 }

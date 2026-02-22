@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
+import FillInBlank from "@/components/story/FillInBlank";
 
 interface TreeNode {
   name: string;
@@ -157,6 +158,14 @@ export default function FilesystemBasics() {
         own root filesystem. In Lesson 7, you&apos;ll learn how container images use <em>layered filesystems</em> to
         share base files efficiently. Mounting is the foundation for both.
       </InfoCard>
+
+      <FillInBlank
+        id="lesson0-fs-fill1"
+        prompt="The root of the Linux filesystem is {blank}"
+        blanks={[{ answer: "/", placeholder: "?" }]}
+        explanation="The root of the Linux filesystem is / (forward slash). Everything branches from this single root — there are no drive letters like Windows."
+        hint="It's a single character, and it's the parent of every other path."
+      />
     </SectionWrapper>
   );
 }

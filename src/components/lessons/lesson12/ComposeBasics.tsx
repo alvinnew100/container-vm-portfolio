@@ -7,6 +7,7 @@ import CodeBlock from "@/components/story/CodeBlock";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function ComposeArchDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -93,6 +94,7 @@ function ComposeArchDiagram() {
 
 export default function ComposeBasics() {
   return (
+    <>
     <SectionWrapper id="sec-compose-basics" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Docker Compose — Multi-Container Applications
@@ -195,5 +197,15 @@ networks:
         networking from Lesson 10, configured automatically.
       </InfoCard>
     </SectionWrapper>
+
+      <KnowledgeCheck
+        id="lesson12-compose-kc1"
+        question="In a Docker Compose file with frontend, api, and db services on separate networks, which service typically connects to both the frontend and database networks?"
+        options={["The API service", "The frontend service"]}
+        correctIndex={0}
+        explanation="The API service acts as a bridge between the frontend and database tiers. It connects to both networks so the frontend can reach it and it can reach the database, while the frontend cannot directly access the database — enforcing network segmentation."
+        hint="Think about which service needs to talk to both the frontend AND the database."
+      />
+    </>
   );
 }

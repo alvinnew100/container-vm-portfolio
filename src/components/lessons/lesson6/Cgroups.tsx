@@ -5,6 +5,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
+import FillInBlank from "@/components/story/FillInBlank";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -33,6 +34,7 @@ function ResourceMeter({ label, value, max, unit, color }: { label: string; valu
 
 export default function Cgroups() {
   return (
+    <>
     <SectionWrapper id="sec-cgroups" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Cgroups — Resource Control
@@ -122,5 +124,14 @@ export default function Cgroups() {
         <ZineCallout page="13" topic="cgroups, OOM killer, CPU throttling" />
       </div>
     </SectionWrapper>
+
+      <FillInBlank
+        id="lesson6-cgroup-fill1"
+        prompt="To limit a container to 0.5 CPUs, set cpu.cfs_quota_us to {blank} (with cpu.cfs_period_us = 100000)."
+        blanks={[{ answer: "50000", placeholder: "?" }]}
+        explanation="cpu.cfs_quota_us / cpu.cfs_period_us = CPU fraction. For 0.5 CPUs: 0.5 × 100,000 = 50,000 microseconds of CPU time per 100ms period."
+        hint="Multiply the CPU fraction (0.5) by the period (100,000 μs)."
+      />
+    </>
   );
 }

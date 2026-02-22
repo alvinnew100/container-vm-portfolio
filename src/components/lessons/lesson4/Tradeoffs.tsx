@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function DecisionTreeDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -168,6 +169,15 @@ export default function Tradeoffs() {
         <TermDefinition term="Kata Containers" definition="an open-source project that runs each container inside its own lightweight VM for hardware-level isolation" />{" "}
         all combine container speed with VM-level isolation.
       </InfoCard>
+
+      <KnowledgeCheck
+        id="lesson4-tradeoff-kc1"
+        question="Containers start in under 1 second while VMs take 30-60 seconds. Why?"
+        options={["Containers share the host kernel — no OS boot needed", "Containers use faster hardware"]}
+        correctIndex={0}
+        explanation="Containers don't boot an OS — they just start a process in an isolated namespace on the existing kernel. VMs must boot an entire guest OS (BIOS → bootloader → kernel → init), which takes 30-60 seconds."
+        hint="Think about what happens when you start a VM vs when you start a container process."
+      />
     </SectionWrapper>
   );
 }

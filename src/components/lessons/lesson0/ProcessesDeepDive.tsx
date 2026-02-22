@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 interface ProcNode {
   pid: number;
@@ -179,6 +180,15 @@ export default function ProcessesDeepDive() {
         process in the system — but it&apos;s actually just a regular process on the host with
         a PID namespace that makes it <em>appear</em> to be PID 1. Same process, different view.
       </InfoCard>
+
+      <KnowledgeCheck
+        id="lesson0-proc-kc1"
+        question="What happens when PID 1 exits in a PID namespace?"
+        options={["All processes in that namespace are killed", "Nothing happens"]}
+        correctIndex={0}
+        explanation="PID 1 is special — it's the init process. When PID 1 exits, the kernel kills all remaining processes in that namespace. This is why containers die when their main process exits."
+        hint="PID 1 has a special role as the init process — it's responsible for all child processes."
+      />
     </SectionWrapper>
   );
 }

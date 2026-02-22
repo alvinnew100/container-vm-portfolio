@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
+import KnowledgeCheck from "@/components/story/KnowledgeCheck";
 
 function HypervisorStackDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -215,6 +216,15 @@ export default function Hypervisors() {
         A Type 2 hypervisor runs <em>as an application</em> within an existing OS. Type 1 has less overhead
         and better performance; Type 2 is easier to install and use on a desktop.
       </InfoCard>
+
+      <KnowledgeCheck
+        id="lesson2-hyp-kc1"
+        question="A Type 1 hypervisor runs directly on hardware. A Type 2 runs on top of a host OS. Which is ESXi?"
+        options={["Type 1 (bare-metal)", "Type 2 (hosted)"]}
+        correctIndex={0}
+        explanation="ESXi is a Type 1 (bare-metal) hypervisor — it installs directly on the server hardware with no host OS underneath. VirtualBox and VMware Workstation are Type 2 hypervisors that run on top of Windows/Linux/macOS."
+        hint="ESXi replaces the host OS entirely — it IS the operating system."
+      />
     </SectionWrapper>
   );
 }

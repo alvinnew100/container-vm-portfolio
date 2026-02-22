@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
+import FillInBlank from "@/components/story/FillInBlank";
 
 function PortMappingDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -54,6 +55,7 @@ function PortMappingDiagram() {
 
 export default function PortMapping() {
   return (
+    <>
     <SectionWrapper id="sec-port-mapping" className="max-w-4xl mx-auto px-4 py-16">
       <h3 className="text-2xl font-bold text-text-primary mb-6">
         Port Mapping
@@ -129,5 +131,17 @@ export default function PortMapping() {
         </InfoCard>
       </div>
     </SectionWrapper>
+
+      <FillInBlank
+        id="lesson10-port-fill1"
+        prompt="The docker flag -p 8080:3000 maps host port {blank} to container port {blank}."
+        blanks={[
+          { answer: "8080", placeholder: "host port" },
+          { answer: "3000", placeholder: "container port" },
+        ]}
+        explanation="The -p flag format is HOST:CONTAINER. So -p 8080:3000 means traffic hitting localhost:8080 is forwarded to port 3000 inside the container."
+        hint="The format is -p HOST_PORT:CONTAINER_PORT."
+      />
+    </>
   );
 }
