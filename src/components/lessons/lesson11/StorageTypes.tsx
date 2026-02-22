@@ -4,7 +4,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -198,12 +198,10 @@ export default function StorageTypes() {
       </InfoCard>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson11-vol-kc1"
-        question="Which Docker storage option is managed by Docker and persists after container removal?"
-        options={["Named volumes", "Container's writable layer"]}
-        correctIndex={0}
-        explanation="Named volumes (docker volume create) are managed by Docker and persist independently of containers. The container's writable layer is deleted when the container is removed with docker rm."
+        prompt="You run a PostgreSQL container without any volume mounts, insert important data, then run 'docker rm' on it. Why is the data gone, and how would you architect the storage differently to survive container removal?"
+        answer="Without a volume mount, PostgreSQL writes all its data files to the container's writable layer — a thin copy-on-write filesystem managed by overlay2 on top of the read-only image layers. When you 'docker rm' the container, Docker deletes this writable layer and all its contents. To persist data, you would use a named volume (e.g., -v pgdata:/var/lib/postgresql/data). Named volumes are managed by Docker in /var/lib/docker/volumes/ and exist independently of any container's lifecycle. Even after 'docker rm', the volume remains on disk. A new container can mount the same volume and pick up exactly where the old one left off. This decoupling of data from containers is fundamental to treating containers as disposable, replaceable units."
         hint="One of these survives 'docker rm'."
       />
     </>

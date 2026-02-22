@@ -7,7 +7,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 const DOCKER_OBJECTS = [
   {
@@ -161,13 +161,11 @@ export default function DockerObjects() {
       </div>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson8-obj-kc1"
-        question="Which Docker object persists data after container removal?"
-        options={["Volume", "Container layer"]}
-        correctIndex={0}
-        explanation="Volumes exist outside the container's filesystem and persist after 'docker rm'. The container's writable layer (where non-volume changes are stored) is deleted when the container is removed."
-        hint="One of these lives inside the container, the other is managed separately by Docker."
+        prompt="You run a database in a container without a volume, insert important data, then accidentally run 'docker rm'. Why is the data gone, and how does Docker's storage architecture make volumes the solution?"
+        answer="When a container runs, it gets a thin writable layer (the upperdir in OverlayFS) on top of the read-only image layers. All writes — including database files — go to this writable layer. When you 'docker rm' the container, Docker deletes this writable layer and everything in it. The data is gone because it was part of the container's ephemeral filesystem. Volumes solve this by existing outside the container's union filesystem entirely. A volume is a directory on the host (typically under /var/lib/docker/volumes/) that is bind-mounted into the container. Since it's not part of the container's layered filesystem, it survives container removal, can be shared between containers, and can be backed up independently. This is why production databases must always use volumes — the container is disposable, but the data is not."
+        hint="Think about where writes go in the OverlayFS layer stack, and what happens to that layer when the container is removed."
       />
     </>
   );

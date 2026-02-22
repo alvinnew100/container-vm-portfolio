@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function RingDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,26 +18,77 @@ function RingDiagram() {
     { ring: 0, label: "Kernel", color: "docker-amber", size: "w-16 h-16 sm:w-20 sm:h-20" },
   ];
 
+  /* Label positions: angle in degrees from center, distance from center */
+  const labelPositions = [
+    { ring: 3, angle: -45, radius: 170 },
+    { ring: 2, angle: 45, radius: 150 },
+    { ring: 1, angle: 135, radius: 130 },
+    { ring: 0, angle: 225, radius: 110 },
+  ];
+
   return (
     <div ref={ref} className="bg-story-card rounded-2xl p-6 sm:p-8 border border-story-border card-shadow mb-8">
       <h4 className="text-sm font-mono text-docker-blue uppercase tracking-wider mb-6 text-center">
         CPU Privilege Rings
       </h4>
       <div className="flex justify-center">
-        <div className="relative w-64 h-64 sm:w-72 sm:h-72">
+        <div className="relative w-[22rem] h-[22rem] sm:w-[24rem] sm:h-[24rem]">
+          {/* Concentric ring circles (visual only) */}
           {rings.map((r, i) => (
             <motion.div
               key={r.ring}
               initial={{ opacity: 0, scale: 0.5 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.15 * (rings.length - i), duration: 0.5 }}
-              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${r.size} rounded-full border-2 border-${r.color}/40 bg-${r.color}/5 flex items-end justify-center pb-1 sm:pb-2`}
-            >
-              <span className={`text-${r.color} text-[8px] sm:text-[9px] font-mono`}>
-                Ring {r.ring}: {r.label}
-              </span>
-            </motion.div>
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${r.size} rounded-full border-2 border-${r.color}/40 bg-${r.color}/5`}
+            />
           ))}
+
+          {/* External labels with connector lines */}
+          {rings.map((r, i) => {
+            const pos = labelPositions[i];
+            const rad = (pos.angle * Math.PI) / 180;
+            const lx = Math.cos(rad) * pos.radius;
+            const ly = Math.sin(rad) * pos.radius;
+            /* Inner point on the ring edge for the connector line */
+            const ringSizes = [144, 104, 72, 40]; /* approx half-sizes in px */
+            const innerR = ringSizes[i] / 2;
+            const ix = Math.cos(rad) * innerR;
+            const iy = Math.sin(rad) * innerR;
+
+            return (
+              <motion.div
+                key={`label-${r.ring}`}
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.15 * (rings.length - i) + 0.3, duration: 0.4 }}
+              >
+                {/* Connector line */}
+                <svg className="absolute top-1/2 left-1/2 overflow-visible pointer-events-none" width="0" height="0">
+                  <line
+                    x1={ix} y1={iy}
+                    x2={lx} y2={ly}
+                    className={`stroke-${r.color}/40`}
+                    strokeWidth="1"
+                    strokeDasharray="3 2"
+                  />
+                </svg>
+                {/* Label badge */}
+                <div
+                  className={`absolute bg-${r.color}/10 border border-${r.color}/30 rounded-lg px-2 py-1 whitespace-nowrap`}
+                  style={{
+                    left: `calc(50% + ${lx}px)`,
+                    top: `calc(50% + ${ly}px)`,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <span className={`text-${r.color} text-[10px] font-mono font-bold`}>
+                    Ring {r.ring}: {r.label}
+                  </span>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
       <motion.p
@@ -167,12 +218,10 @@ export default function CpuVirt() {
         stores all the guest/host state for fast switching. Modern CPUs achieve VM exits in ~1 microsecond.
       </InfoCard>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson3-cpu-kc1"
-        question="What happens when a guest OS executes a privileged instruction with hardware-assisted virtualization (VT-x)?"
-        options={["VM exit to hypervisor", "Instruction executes normally"]}
-        correctIndex={0}
-        explanation="When a guest OS in VMX non-root mode executes a privileged instruction, the CPU triggers a VM exit — control transfers to the hypervisor. The hypervisor handles the instruction and resumes the guest with a VM entry."
+        prompt="If VM exits are necessary for safety, why are they also the biggest performance bottleneck in virtualization? How would you reason about when a VM exit is unavoidable versus when it can be eliminated?"
+        answer="Each VM exit is expensive (~1 microsecond) because the CPU must save the entire guest state to the VMCS, load the hypervisor state, execute the handler, save the hypervisor state, restore the guest state, and resume with VM entry. Multiply this by thousands of exits per second and the overhead becomes significant. A VM exit is unavoidable when the guest tries something that could compromise isolation — modifying page tables, accessing I/O ports, or changing interrupt handlers. But many exits can be eliminated: EPT removes exits for page table modifications, APIC virtualization removes exits for interrupt handling, and VPID removes TLB flushes on context switches. The evolution of hardware virtualization is essentially the story of moving operations from 'must trap to hypervisor' to 'handled directly in hardware without exiting.'"
         hint="The CPU has two modes: VMX root (hypervisor) and VMX non-root (guest). Privileged instructions can't run in non-root mode."
       />
     </SectionWrapper>

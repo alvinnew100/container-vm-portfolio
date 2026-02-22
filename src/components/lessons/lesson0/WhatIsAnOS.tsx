@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 const LAYERS = [
   {
@@ -156,12 +156,10 @@ export default function WhatIsAnOS() {
         the foundation for understanding both.
       </InfoCard>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson0-os-kc1"
-        question="Which ring does the kernel run in?"
-        options={["Ring 0", "Ring 3"]}
-        correctIndex={0}
-        explanation="The kernel runs in Ring 0 (kernel mode) with full hardware access. User applications run in Ring 3 (user mode) with restricted access."
+        prompt="If the kernel ran in Ring 3 alongside user applications, what specific things would break? Why is Ring 0 necessary for the kernel's job?"
+        answer="If the kernel ran in Ring 3, it could not access hardware directly — it could not manage page tables, handle interrupts, or configure I/O ports. These operations require privileged instructions that only Ring 0 can execute. Without Ring 0 access, the kernel could not enforce memory protection between processes, could not context-switch between programs, and could not prevent a rogue application from taking over the entire machine. The ring separation is the hardware foundation that makes multitasking and security possible."
         hint="The kernel needs unrestricted access to hardware — which ring provides that?"
       />
     </SectionWrapper>

@@ -8,7 +8,7 @@ import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import ZineCallout from "@/components/story/ZineCallout";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function DockerPullFlowDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -140,13 +140,11 @@ export default function Registries() {
       </div>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson7-reg-kc1"
-        question="When you run 'docker pull nginx', which registry does Docker pull from by default?"
-        options={["Docker Hub (docker.io)", "GitHub Container Registry (ghcr.io)"]}
-        correctIndex={0}
-        explanation="Docker Hub (docker.io) is the default public registry. When you omit the registry prefix, Docker automatically pulls from Docker Hub. To use other registries, you must specify the full path (e.g., ghcr.io/owner/image)."
-        hint="The default registry is the one Docker was originally built around."
+        prompt="When you run 'docker pull nginx', Docker knows to go to Docker Hub — but how? What happens behind the scenes to resolve that short name into an actual download, and what security risks does this default behavior introduce?"
+        answer="When you omit the registry prefix, Docker automatically prepends 'docker.io/library/' — so 'nginx' becomes 'docker.io/library/nginx:latest'. The Docker daemon contacts the Docker Hub Registry API, resolves the 'latest' tag to a specific manifest (identified by a sha256 digest), then downloads each layer in parallel. The security risk is twofold: first, 'latest' is a mutable tag — it can point to a different image tomorrow, so you could unknowingly pull a changed image. Second, Docker Hub allows anyone to publish images, so a typo like 'ngixn' could pull a malicious image. Best practices include using explicit registry paths (e.g., docker.io/library/nginx:1.25-alpine), pinning to digest hashes for production, and scanning images with tools like docker scout or Trivy."
+        hint="Think about what Docker assumes when you don't specify a full registry path."
       />
     </>
   );

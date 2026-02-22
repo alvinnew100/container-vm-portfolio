@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 const DEVICES = [
   { label: "Laptop", ip: "192.168.1.10", x: 10, y: 60 },
@@ -183,12 +183,10 @@ export default function Networking101() {
         iptables for port mapping. All of these build directly on the concepts introduced here.
       </InfoCard>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson0-net-kc1"
-        question="When a laptop behind a router sends a packet to a web server, what source IP does the server see?"
-        options={["Router's public IP", "Laptop's private IP"]}
-        correctIndex={0}
-        explanation="NAT (Network Address Translation) replaces the laptop's private IP (e.g., 192.168.1.5) with the router's public IP before sending packets to the internet. The server only sees the router's public address."
+        prompt="If NAT didn't exist and every device needed its own public IP address, what would happen to the internet? Why is NAT both a solution and a complication for containers?"
+        answer="Without NAT, we would have exhausted the IPv4 address space (only ~4.3 billion addresses) long ago — there are far more devices than public IPs. NAT lets thousands of devices share one public IP by rewriting packet source addresses at the router. For containers, NAT is both essential and tricky: Docker uses NAT (via iptables) to map host ports to container ports, so containers can share the host's IP. But this adds complexity — containers can't easily accept inbound connections without explicit port mapping, and container-to-container networking across hosts requires overlay networks or other solutions to work around NAT boundaries."
         hint="Private IP addresses (192.168.x.x) can't be routed on the public internet."
       />
     </SectionWrapper>

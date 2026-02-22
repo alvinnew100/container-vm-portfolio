@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function IoPathDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -162,12 +162,10 @@ export default function IoVirt() {
         </InfoCard>
       </div>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson3-io-kc1"
-        question="Which I/O virtualization method gives near-native performance by assigning a physical device directly to a VM?"
-        options={["SR-IOV", "Emulation"]}
-        correctIndex={0}
-        explanation="SR-IOV (Single Root I/O Virtualization) creates virtual functions (VFs) from a physical NIC, each assignable directly to a VM via PCIe passthrough. This bypasses the hypervisor for data-path I/O, giving near-native performance."
+        prompt="SR-IOV gives near-native I/O performance, so why don't all cloud providers use it for every VM? What tradeoffs make full emulation or virtio still relevant?"
+        answer="SR-IOV has fundamental limitations that prevent universal adoption. First, each physical NIC supports a limited number of Virtual Functions (typically 64-256), so on a dense host running hundreds of VMs or containers, you run out of VFs. Second, SR-IOV bypasses the hypervisor, which means the hypervisor loses visibility into network traffic — making features like live migration, network QoS, and software-defined networking much harder to implement. Third, SR-IOV requires specific hardware support and IOMMU configuration, reducing portability. Full emulation remains useful for maximum compatibility (any guest OS, no special drivers). Virtio strikes the best balance for most workloads — it uses shared memory ring buffers to batch I/O operations, reducing VM exits while still allowing the hypervisor to mediate traffic and support live migration."
         hint="This method splits a single physical NIC into multiple virtual functions."
       />
     </SectionWrapper>

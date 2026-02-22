@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 interface ProcNode {
   pid: number;
@@ -181,12 +181,10 @@ export default function ProcessesDeepDive() {
         a PID namespace that makes it <em>appear</em> to be PID 1. Same process, different view.
       </InfoCard>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson0-proc-kc1"
-        question="What happens when PID 1 exits in a PID namespace?"
-        options={["All processes in that namespace are killed", "Nothing happens"]}
-        correctIndex={0}
-        explanation="PID 1 is special — it's the init process. When PID 1 exits, the kernel kills all remaining processes in that namespace. This is why containers die when their main process exits."
+        prompt="A colleague says 'Containers die when their main process exits because that's just how Docker works.' Is this really a Docker feature, or is something deeper going on? What would happen if you could somehow keep a container alive after PID 1 exits?"
+        answer="This is not a Docker feature — it is a fundamental Linux kernel behavior. PID 1 (the init process) is special at the kernel level: when PID 1 exits in a PID namespace, the kernel sends SIGKILL to every remaining process in that namespace and tears it down. This happens because PID 1 is responsible for reaping orphaned child processes. Without it, zombie processes would accumulate with no parent to collect their exit status. You cannot keep a container alive after PID 1 exits because the kernel enforces this — it is the same reason the entire system shuts down if the host's PID 1 (systemd/init) crashes."
         hint="PID 1 has a special role as the init process — it's responsible for all child processes."
       />
     </SectionWrapper>

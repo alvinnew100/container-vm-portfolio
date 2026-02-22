@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import CodeBlock from "@/components/story/CodeBlock";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function SizeComparisonBars() {
   const ref = useRef<HTMLDivElement>(null);
@@ -164,12 +164,10 @@ ENTRYPOINT ["./server"]`}
       </div>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson9-optimize-kc1"
-        question="Why should you COPY package.json before COPY src/ in a Dockerfile?"
-        options={["To cache npm install when only source code changes", "Because package.json is smaller"]}
-        correctIndex={0}
-        explanation="If you COPY everything at once, changing any source file invalidates the npm install cache. By copying package.json first and running npm install, that layer is cached as long as dependencies don't change — only the source copy layer needs rebuilding."
+        prompt="If you wrote COPY . /app instead of copying package.json separately before src/, what would happen to your build times every time you changed a single line of application code? Explain the layer caching mechanics behind your answer."
+        answer="If you COPY everything at once, changing any source file invalidates the COPY layer's cache, which means the subsequent RUN npm install layer also gets invalidated and must re-execute — even though your dependencies haven't changed. By splitting the Dockerfile into COPY package.json first, then RUN npm install, then COPY src/, you create a dependency-install layer whose cache key only depends on package.json. As long as dependencies don't change, npm install is skipped entirely and only the source copy layer rebuilds. This can save minutes on every build, since npm install is typically the slowest step."
         hint="Docker rebuilds from the first changed layer upward."
       />
     </>

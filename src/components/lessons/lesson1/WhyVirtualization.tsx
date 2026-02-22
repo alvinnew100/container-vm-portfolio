@@ -6,8 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import DragSortChallenge from "@/components/story/DragSortChallenge";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function AnimatedTimeline() {
   const ref = useRef<HTMLDivElement>(null);
@@ -181,19 +180,10 @@ export default function WhyVirtualization() {
           experience.
         </InfoCard>
 
-        <DragSortChallenge
+        <RevealCard
           id="lesson1-timeline-drag1"
-          prompt="Order these virtualization milestones from earliest to most recent:"
-          items={[
-            { id: "ibm", label: "IBM Mainframe Partitioning", detail: "1960s" },
-            { id: "vmware", label: "VMware Founded", detail: "1998" },
-            { id: "xen", label: "Xen Hypervisor", detail: "2003" },
-            { id: "kvm", label: "KVM in Linux Kernel", detail: "2007" },
-            { id: "lxc", label: "Linux Containers (LXC)", detail: "2008" },
-            { id: "docker", label: "Docker Launches", detail: "2013" },
-            { id: "k8s", label: "Kubernetes 1.0", detail: "2015" },
-          ]}
-          correctOrder={["ibm", "vmware", "xen", "kvm", "lxc", "docker", "k8s"]}
+          prompt="If KVM (2007) had been available in the 1990s, would VMware (founded 1998) have needed to invent binary translation? What problem did each solve, and why did the timeline unfold the way it did?"
+          answer="VMware invented binary translation because x86 CPUs in the 1990s lacked hardware virtualization support. Certain sensitive x86 instructions silently failed instead of trapping when executed outside Ring 0, making the classic trap-and-emulate approach impossible. Binary translation rewrote these problematic instructions on the fly. KVM, on the other hand, relies on Intel VT-x (2005) and AMD-V (2006) — hardware extensions that added a new CPU mode specifically for virtualization. If VT-x had existed in the 1990s, there would have been no need for binary translation because the CPU itself could trap all sensitive instructions. The timeline reflects hardware limitations driving software innovation: mainframe partitioning (1960s) worked because mainframes were designed for it, x86 was not, so VMware bridged the gap with software, and then Intel/AMD closed it with hardware, enabling KVM's simpler approach."
           hint="The timeline on this page shows you the exact years for each milestone."
         />
       </SectionWrapper>

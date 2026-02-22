@@ -4,7 +4,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -179,12 +179,10 @@ export default function VmArchitecture() {
         in seconds. This is one of the biggest advantages of VMs over bare metal.
       </InfoCard>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson2-stack-kc1"
-        question="In a VM stack, what sits between the hardware and guest operating systems?"
-        options={["Hypervisor", "Container runtime"]}
-        correctIndex={0}
-        explanation="The hypervisor sits between the physical hardware and the guest VMs. It virtualizes hardware resources (CPU, memory, I/O) so each VM believes it has its own dedicated hardware."
+        prompt="Why can't guest operating systems run directly on shared hardware without a hypervisor? What specific things would go wrong if two guest OSes tried to control the same physical CPU and RAM simultaneously?"
+        answer="Without a hypervisor, two guest OSes would both try to write to the same hardware control registers, configure the same interrupt handlers, and manage the same physical memory pages. They would overwrite each other's page tables, causing instant crashes. Both would try to claim Ring 0 and set up their own IDT (Interrupt Descriptor Table), so interrupts would be delivered to the wrong kernel. The hypervisor prevents this by virtualizing hardware resources — it gives each VM the illusion of dedicated hardware (vCPU, vRAM, vDisk, vNIC) while multiplexing the real hardware underneath. It intercepts privileged operations via VM exits and ensures each guest's modifications only affect its own virtual state."
         hint="This layer's job is to create and manage virtual machines."
       />
     </SectionWrapper>

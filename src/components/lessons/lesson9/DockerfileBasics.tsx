@@ -7,7 +7,7 @@ import CodeBlock from "@/components/story/CodeBlock";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 const INSTRUCTIONS = [
   { cmd: "FROM", layer: "Base Image", color: "docker-violet" },
@@ -149,12 +149,10 @@ CMD ["node", "src/server.js"]`}
       </div>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson9-cache-kc1"
-        question="In a Dockerfile, if you change Layer 4, which layers need to be rebuilt?"
-        options={["Layer 4 and all layers above it", "Only Layer 4"]}
-        correctIndex={0}
-        explanation="Docker layer caching is invalidated from the changed layer upward. If Layer 4 changes, layers 4, 5, 6, etc. must all be rebuilt. This is why you should put frequently changing instructions (like COPY src/) later in the Dockerfile."
+        prompt="Imagine a Dockerfile with 6 layers. You edit the COPY instruction at Layer 4. Why can't Docker reuse the cached versions of Layers 5 and 6, even though you didn't touch them?"
+        answer="Docker's layer cache works by hashing each instruction and its inputs. Each layer's hash depends on the previous layer's hash (like a blockchain). When Layer 4 changes, its hash changes, which means the input to Layer 5 is now different — so Layer 5's cache key no longer matches, even if the Layer 5 instruction itself is identical. The same cascading invalidation applies to Layer 6. This is why frequently changing instructions (like COPY src/) should be placed as late as possible in the Dockerfile — they invalidate fewer layers above them."
         hint="Think about how Docker caches work — changes cascade upward."
       />
     </>

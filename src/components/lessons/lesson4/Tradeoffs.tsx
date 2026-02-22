@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function DecisionTreeDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -170,12 +170,10 @@ export default function Tradeoffs() {
         all combine container speed with VM-level isolation.
       </InfoCard>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson4-tradeoff-kc1"
-        question="Containers start in under 1 second while VMs take 30-60 seconds. Why?"
-        options={["Containers share the host kernel — no OS boot needed", "Containers use faster hardware"]}
-        correctIndex={0}
-        explanation="Containers don't boot an OS — they just start a process in an isolated namespace on the existing kernel. VMs must boot an entire guest OS (BIOS → bootloader → kernel → init), which takes 30-60 seconds."
+        prompt="If containers are faster, cheaper, and denser than VMs, why hasn't the industry abandoned VMs entirely? Walk through a scenario where replacing a VM with a container would be a critical mistake."
+        answer="Consider a cloud provider hosting workloads from competing companies on the same physical server. If they used containers, a kernel vulnerability (e.g., a privilege escalation bug in a syscall) would let one tenant's code access another tenant's data — a catastrophic breach. VMs prevent this because each tenant's code runs against its own guest kernel, and the hypervisor's attack surface is orders of magnitude smaller than the Linux syscall interface. Other scenarios where VMs are irreplaceable: running Windows alongside Linux (containers require the same kernel), running a custom or older kernel version, using SR-IOV for direct hardware access, or meeting compliance regulations that mandate hardware-level isolation. The industry hasn't abandoned VMs because security boundaries, OS diversity, and hardware access are problems that containers fundamentally cannot solve — they operate at a different layer of the stack."
         hint="Think about what happens when you start a VM vs when you start a container process."
       />
     </SectionWrapper>

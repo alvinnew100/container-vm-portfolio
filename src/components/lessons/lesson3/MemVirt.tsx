@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import FillInBlank from "@/components/story/FillInBlank";
+import RevealCard from "@/components/story/RevealCard";
 
 function AddressTranslationDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -165,11 +165,10 @@ export default function MemVirt() {
         flushing the TLB on VM switches.
       </InfoCard>
 
-      <FillInBlank
+      <RevealCard
         id="lesson3-mem-fill1"
-        prompt="In two-level address translation, guest virtual addresses are translated to {blank}, then to host physical addresses."
-        blanks={[{ answer: "guest physical addresses", placeholder: "?" }]}
-        explanation="The translation chain is: Guest Virtual Address (GVA) → Guest Physical Address (GPA) via guest page tables → Host Physical Address (HPA) via EPT/NPT. The guest thinks GPAs are real hardware addresses."
+        prompt="How would you derive the full address translation chain in a VM from first principles? Why does virtualization require two levels of translation, and what breaks if you skip one?"
+        answer="Start from what each layer needs. An application uses virtual addresses (GVA) because processes need isolated address spaces — two apps can both use address 0x1000 without conflict. The guest OS translates GVA to what it believes is physical memory (GPA) using its own page tables. But GPA is a fiction — the guest thinks it owns contiguous RAM starting at address 0, but the hypervisor actually carved that from arbitrary host memory regions. So EPT/NPT translates GPA to actual hardware addresses (HPA). If you skip the first level (GVA to GPA), guest processes would see each other's memory — no process isolation. If you skip the second level (GPA to HPA), the guest would write directly to physical RAM, overwriting other VMs' memory — no VM isolation. Each level protects a different boundary: process-to-process within a VM, and VM-to-VM on the host."
         hint="The guest OS manages its own page tables mapping virtual to what IT thinks is physical memory."
       />
     </SectionWrapper>

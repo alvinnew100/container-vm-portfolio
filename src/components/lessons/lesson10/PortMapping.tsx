@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import FillInBlank from "@/components/story/FillInBlank";
+import RevealCard from "@/components/story/RevealCard";
 
 function PortMappingDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -132,14 +132,10 @@ export default function PortMapping() {
       </div>
     </SectionWrapper>
 
-      <FillInBlank
+      <RevealCard
         id="lesson10-port-fill1"
-        prompt="The docker flag -p 8080:3000 maps host port {blank} to container port {blank}."
-        blanks={[
-          { answer: "8080", placeholder: "host port" },
-          { answer: "3000", placeholder: "container port" },
-        ]}
-        explanation="The -p flag format is HOST:CONTAINER. So -p 8080:3000 means traffic hitting localhost:8080 is forwarded to port 3000 inside the container."
+        prompt="Docker's -p flag uses the format HOST:CONTAINER. If a containerized app listens on port 3000 and you want users to reach it on port 8080, explain what -p 8080:3000 actually configures at the network level."
+        answer="The flag -p 8080:3000 tells Docker to set up iptables rules (DNAT) that forward any traffic arriving at the host's port 8080 to port 3000 inside the container's network namespace. The host listens on 0.0.0.0:8080 (all interfaces) by default. When a packet arrives, the kernel rewrites the destination address to the container's virtual IP on the docker0 bridge and forwards it through the veth pair. The container's app sees the connection arriving on port 3000 as if it were a direct connection."
         hint="The format is -p HOST_PORT:CONTAINER_PORT."
       />
     </>

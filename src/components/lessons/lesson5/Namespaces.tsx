@@ -7,7 +7,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 const NS_TYPES = [
   {
@@ -80,13 +80,13 @@ function NamespaceWallDiagram() {
         7 Namespace Walls Around a Container Process
       </h4>
       <div className="flex justify-center">
-        <div className="relative">
+        <div className="relative w-72 h-72">
           {/* Central process */}
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ delay: 1.0, duration: 0.4 }}
-            className="w-20 h-20 rounded-full bg-docker-blue/20 border-2 border-docker-blue/40 flex items-center justify-center z-10 relative"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-docker-blue/20 border-2 border-docker-blue/40 flex items-center justify-center z-10"
           >
             <span className="text-docker-blue text-[10px] font-bold text-center leading-tight">Container<br/>Process</span>
           </motion.div>
@@ -95,8 +95,8 @@ function NamespaceWallDiagram() {
           {walls.map((wall, i) => {
             const angle = (i * 360) / walls.length - 90;
             const rad = (angle * Math.PI) / 180;
-            const x = Math.cos(rad) * 70;
-            const y = Math.sin(rad) * 70;
+            const x = Math.cos(rad) * 110;
+            const y = Math.sin(rad) * 110;
 
             return (
               <motion.div
@@ -120,7 +120,7 @@ function NamespaceWallDiagram() {
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ delay: 1.2, duration: 0.5 }}
-        className="text-text-muted text-xs text-center mt-16"
+        className="text-text-muted text-xs text-center mt-6"
       >
         Each wall is a namespace. The host can see through all walls; the process inside cannot see out.
       </motion.p>
@@ -213,13 +213,11 @@ export default function Namespaces() {
       </div>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson5-ns-kc1"
-        question="How many Linux namespace types exist for container isolation?"
-        options={["7", "3"]}
-        correctIndex={0}
-        explanation="Linux has 7 namespace types: PID (process IDs), NET (networking), MNT (filesystem mounts), UTS (hostname), IPC (inter-process communication), USER (user/group IDs), and cgroup (resource limits). Together they create complete process isolation."
-        hint="Count the namespace types listed on this page — each isolates a different kernel resource."
+        prompt="Why does the Linux kernel need 7 separate namespace types instead of a single 'isolate everything' flag? What would break if PID and NET namespaces were merged into one?"
+        answer="Each namespace type isolates a fundamentally different kernel resource — process IDs, network stack, filesystem mounts, hostname, IPC, user/group IDs, and cgroup views. They're separate because you sometimes need fine-grained control: for example, you might want two containers to share the same network namespace (like a Kubernetes pod) while keeping their PID namespaces separate. If PID and NET were merged, you couldn't share a network stack without also sharing process visibility, breaking sidecar patterns and debugging workflows. The 7-namespace design gives composable isolation — each wall can be raised or lowered independently."
+        hint="Think about cases where you'd want to share one resource but isolate another."
       />
     </>
   );

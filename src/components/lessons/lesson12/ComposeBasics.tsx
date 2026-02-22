@@ -7,7 +7,7 @@ import CodeBlock from "@/components/story/CodeBlock";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function ComposeArchDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -198,12 +198,10 @@ networks:
       </InfoCard>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson12-compose-kc1"
-        question="In a Docker Compose file with frontend, api, and db services on separate networks, which service typically connects to both the frontend and database networks?"
-        options={["The API service", "The frontend service"]}
-        correctIndex={0}
-        explanation="The API service acts as a bridge between the frontend and database tiers. It connects to both networks so the frontend can reach it and it can reach the database, while the frontend cannot directly access the database — enforcing network segmentation."
+        prompt="In a Compose file with frontend, api, and db on separate networks, why is it a security problem if the frontend service can directly reach the database? How does placing the API on both networks enforce segmentation?"
+        answer="If the frontend can reach the database directly, a vulnerability in the frontend (e.g., XSS, SSRF, or a compromised dependency) could be exploited to send raw SQL queries or attack the database without going through the API's validation, authentication, and authorization layers. By placing the frontend and db on separate Docker networks and connecting only the API service to both, you enforce network segmentation at the infrastructure level. The frontend can only talk to the API (on the 'frontend' network), and only the API can talk to the database (on the 'backend' network). Docker's iptables rules physically prevent packets from the frontend container from reaching the db container. The API acts as a controlled gateway — all database access must pass through its business logic, rate limiting, and input sanitization."
         hint="Think about which service needs to talk to both the frontend AND the database."
       />
     </>

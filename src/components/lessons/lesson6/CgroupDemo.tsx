@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function CgroupHierarchyDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -206,13 +206,11 @@ export default function CgroupDemo() {
       </InfoCard>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson6-limits-kc1"
-        question="When a container hits its memory limit, the kernel OOM-kills it. What happens when it hits its CPU limit?"
-        options={["The process is throttled (slowed down)", "The process is killed"]}
-        correctIndex={0}
-        explanation="Memory limits are hard: exceed them and you're OOM-killed. CPU limits are soft: the CFS scheduler simply throttles the process — it stops running until the next period. The process survives but runs slower."
-        hint="Memory and CPU limits are enforced differently — one is fatal, the other just slows you down."
+        prompt="A colleague says 'cgroup limits kill processes that use too many resources.' When is this true and when does it fail? Why does the kernel treat memory and CPU violations so differently?"
+        answer="This is only true for memory limits. When a container exceeds its memory.limit_in_bytes, the kernel's OOM killer terminates the process immediately — memory is a finite, non-shareable resource, and the kernel can't 'pause' a process that has already allocated too much. But CPU limits work entirely differently: the CFS scheduler simply throttles the process, pausing it until the next scheduling period begins. The process survives but runs slower. The fundamental reason is that CPU time is a renewable resource — every 100ms a new budget arrives — while memory is a stockpile that can't be reclaimed without killing the consumer. This distinction matters in production: CPU throttling causes latency spikes, while memory limits cause crashes."
+        hint="Think about the fundamental nature of CPU time vs memory — one is renewable, the other is consumed."
       />
     </>
   );

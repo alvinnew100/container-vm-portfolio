@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function HypervisorStackDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -217,12 +217,10 @@ export default function Hypervisors() {
         and better performance; Type 2 is easier to install and use on a desktop.
       </InfoCard>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson2-hyp-kc1"
-        question="A Type 1 hypervisor runs directly on hardware. A Type 2 runs on top of a host OS. Which is ESXi?"
-        options={["Type 1 (bare-metal)", "Type 2 (hosted)"]}
-        correctIndex={0}
-        explanation="ESXi is a Type 1 (bare-metal) hypervisor — it installs directly on the server hardware with no host OS underneath. VirtualBox and VMware Workstation are Type 2 hypervisors that run on top of Windows/Linux/macOS."
+        prompt="A colleague claims KVM is a Type 2 hypervisor because it runs inside Linux. When is this argument valid, and when does it fall apart? What makes the Type 1 vs Type 2 distinction blurry for KVM?"
+        answer="The argument sounds reasonable because KVM is a Linux kernel module — Linux is the host OS, and KVM runs 'inside' it. But it falls apart when you look at what actually happens: once KVM loads, the Linux kernel itself becomes the hypervisor running in Ring 0 / VMX root mode. There is no separate OS underneath — Linux IS the hypervisor. This is fundamentally different from VirtualBox, which runs as a userspace application on top of an existing OS. KVM turns Linux into a Type 1 hypervisor that also happens to be a general-purpose OS. This is why KVM powers major cloud providers (AWS, GCP) with near-native performance — it has direct hardware access, just like ESXi or Xen, but with the added benefit of Linux's mature driver ecosystem and scheduler."
         hint="ESXi replaces the host OS entirely — it IS the operating system."
       />
     </SectionWrapper>

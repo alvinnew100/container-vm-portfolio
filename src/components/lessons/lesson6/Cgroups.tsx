@@ -5,7 +5,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
-import FillInBlank from "@/components/story/FillInBlank";
+import RevealCard from "@/components/story/RevealCard";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -125,12 +125,11 @@ export default function Cgroups() {
       </div>
     </SectionWrapper>
 
-      <FillInBlank
+      <RevealCard
         id="lesson6-cgroup-fill1"
-        prompt="To limit a container to 0.5 CPUs, set cpu.cfs_quota_us to {blank} (with cpu.cfs_period_us = 100000)."
-        blanks={[{ answer: "50000", placeholder: "?" }]}
-        explanation="cpu.cfs_quota_us / cpu.cfs_period_us = CPU fraction. For 0.5 CPUs: 0.5 × 100,000 = 50,000 microseconds of CPU time per 100ms period."
-        hint="Multiply the CPU fraction (0.5) by the period (100,000 μs)."
+        prompt="How would you derive the correct cpu.cfs_quota_us value from first principles to limit a container to exactly 0.5 CPUs? What does this value actually represent at the kernel scheduler level?"
+        answer="The CFS (Completely Fair Scheduler) enforces CPU limits using two values: cpu.cfs_period_us (the scheduling period, default 100,000 microseconds = 100ms) and cpu.cfs_quota_us (how many microseconds of CPU time the process gets per period). The ratio quota/period = CPU fraction. For 0.5 CPUs: 0.5 x 100,000 = 50,000 microseconds. This means the container gets 50ms of CPU time for every 100ms wall-clock period. If it uses its 50ms budget early, the kernel throttles it (pauses it) until the next period starts. For multi-core limits, the quota can exceed the period — e.g., 200,000/100,000 = 2.0 CPUs means 200ms of CPU time per 100ms period, spread across 2 cores."
+        hint="Think about the relationship between quota, period, and the fraction of CPU time a process gets."
       />
     </>
   );

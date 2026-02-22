@@ -9,7 +9,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 const SCRIPT_STEPS = [
   { label: "Download image", line: "wget + tar", color: "docker-blue" },
@@ -198,13 +198,11 @@ cgexec -g "cpu,cpuacct,memory:$cgroup_id" \\  # 4. use the cgroup
       </div>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson5-pid-kc1"
-        question="A container's main process is PID 1 inside the container but PID 4523 on the host. What happens if PID 1 exits?"
-        options={["The container dies — all its processes are killed", "Nothing — another process becomes PID 1"]}
-        correctIndex={0}
-        explanation="PID 1 is the init process of the PID namespace. When it exits, the kernel sends SIGKILL to all remaining processes in that namespace, effectively destroying the container. This is why 'docker stop' sends SIGTERM to PID 1."
-        hint="PID 1 has a special role — it's the parent of all processes in the namespace."
+        prompt="A container's main process is PID 1 inside its namespace but PID 4523 on the host. Why does the kernel treat PID 1 differently from every other process, and what cascade of events happens when it exits?"
+        answer="PID 1 is the init process of the PID namespace. The kernel gives it a special role: it becomes the parent of all orphaned processes in the namespace, and it's the only process that can define signal handling for the namespace. When PID 1 exits, the kernel sends SIGKILL to every remaining process in that namespace, effectively destroying the container. There's no fallback — no other process can take over as PID 1. This is why 'docker stop' sends SIGTERM to PID 1 first (giving it a chance to shut down gracefully), then SIGKILL after a timeout. It's also why proper init systems like tini exist — to handle signals and reap zombie processes that PID 1 is responsible for."
+        hint="PID 1 has a special role — it's the parent of all processes in the namespace. Think about what happens to children when a parent disappears."
       />
     </>
   );

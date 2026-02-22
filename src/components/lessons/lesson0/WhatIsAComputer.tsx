@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 const COMPONENTS = [
   {
@@ -137,12 +137,10 @@ export default function WhatIsAComputer() {
         makes everything else click.
       </InfoCard>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson0-hw-kc1"
-        question="Which component executes instructions?"
-        options={["CPU", "RAM"]}
-        correctIndex={0}
-        explanation="The CPU (Central Processing Unit) fetches, decodes, and executes instructions. RAM temporarily stores data the CPU is actively working with."
+        prompt="Why can't RAM execute instructions on its own? What fundamental capability does the CPU have that RAM lacks?"
+        answer="The CPU has an instruction decoder and execution units (ALU, control unit) that can interpret and carry out operations. RAM is purely passive storage — it holds data and instructions but has no logic to process them. Without the CPU's fetch-decode-execute cycle, the instructions in RAM would just be inert bit patterns."
         hint="Think about which component is called the 'brain' of the computer."
       />
     </SectionWrapper>

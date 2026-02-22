@@ -3,7 +3,7 @@
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -149,12 +149,10 @@ export default function NetworkTypes() {
       </InfoCard>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson10-bridge-kc1"
-        question="On Docker's default bridge network, containers communicate using:"
-        options={["IP addresses only (no DNS)", "Container names via built-in DNS"]}
-        correctIndex={0}
-        explanation="The default bridge network does NOT provide automatic DNS resolution between containers. You must use IP addresses or create a user-defined bridge network for DNS-based service discovery."
+        prompt="Two containers are running on Docker's default bridge network. You try to ping one from the other using its container name, but it fails. Why does name resolution work on user-defined bridge networks but not the default one, even though both use the same bridge driver?"
+        answer="The default bridge network is a legacy implementation that predates Docker's embedded DNS system. It does not register container names with Docker's DNS server at 127.0.0.11, so containers on it can only communicate using IP addresses. User-defined bridge networks, created with 'docker network create', automatically register each container's name as a DNS entry in Docker's embedded DNS server. This is an intentional design difference — the default bridge exists for backward compatibility, while user-defined bridges provide the modern, DNS-enabled networking experience. This is why the Docker documentation recommends always creating custom bridge networks for multi-container applications."
         hint="The default bridge and user-defined bridges have different DNS behaviors."
       />
     </>

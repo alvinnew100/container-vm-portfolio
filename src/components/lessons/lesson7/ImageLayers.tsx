@@ -6,8 +6,7 @@ import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import ZineCallout from "@/components/story/ZineCallout";
-import DragSortChallenge from "@/components/story/DragSortChallenge";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -168,27 +167,17 @@ export default function ImageLayers() {
       </div>
     </SectionWrapper>
 
-      <DragSortChallenge
+      <RevealCard
         id="lesson7-layers-drag1"
-        prompt="Order these Dockerfile instructions as they would appear in a typical Dockerfile (top to bottom):"
-        items={[
-          { id: "from", label: "FROM node:20-alpine", detail: "Base image" },
-          { id: "workdir", label: "WORKDIR /app", detail: "Set working directory" },
-          { id: "copy-pkg", label: "COPY package*.json ./", detail: "Copy dependency manifest" },
-          { id: "run-install", label: "RUN npm install", detail: "Install dependencies" },
-          { id: "copy-src", label: "COPY . .", detail: "Copy application source" },
-          { id: "cmd", label: "CMD [\"node\", \"server.js\"]", detail: "Default command" },
-        ]}
-        correctOrder={["from", "workdir", "copy-pkg", "run-install", "copy-src", "cmd"]}
-        hint="Dockerfile instructions that change less frequently should come first for better layer caching."
+        prompt="If you put COPY . . before RUN npm install in a Dockerfile, what would happen to your build cache every time you change a source file? Explain why instruction order matters for layer caching."
+        answer="Every Dockerfile instruction creates a layer, and Docker caches layers from top to bottom. When any layer changes, all layers below it are invalidated and rebuilt. If COPY . . comes before RUN npm install, then every time you change any source file, Docker sees the COPY layer has changed and must re-run npm install from scratch — even if package.json hasn't changed. This could add minutes to every build. The optimal order is: FROM (rarely changes), WORKDIR, COPY package*.json (changes only when dependencies change), RUN npm install (cached unless package.json changed), COPY . . (changes frequently but is fast), CMD (never changes). This way, the expensive npm install layer stays cached for most builds."
+        hint="Think about what happens to every layer below a changed layer in the cache."
       />
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson7-cow-kc1"
-        question="Container X modifies /etc/config which exists in a read-only image layer. What happens to other containers using the same image?"
-        options={["They still see the original file — changes are copy-on-write", "They see the modified file"]}
-        correctIndex={0}
-        explanation="OverlayFS uses copy-on-write (CoW). When Container X modifies a file from a read-only layer, it's copied to the container's writable layer first. Other containers still read from the original layer — they're completely unaffected."
+        prompt="Container X modifies /etc/config from a shared image layer. Why don't other containers see the change? Trace the OverlayFS mechanism that prevents this."
+        answer="OverlayFS uses copy-on-write (CoW). When Container X modifies a file from a read-only layer, the file is first copied to the container's own writable layer (the 'upper' layer), and the modification happens there. Other containers still read from the original read-only 'lower' layer — they're completely unaffected. This is why multiple containers can share the same image layers efficiently without interfering with each other. The lowerdir layers are never modified; all writes go to the upperdir. When reading, OverlayFS checks the upper layer first — if the file exists there, it uses that version; otherwise it falls through to the lower layers."
         hint="Image layers are read-only. Each container gets its own thin writable layer on top."
       />
     </>

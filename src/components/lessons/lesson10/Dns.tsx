@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function DnsFlowDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -124,12 +124,10 @@ export default function Dns() {
       </InfoCard>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson10-dns-kc1"
-        question="How does Docker resolve service names like 'db' to IP addresses on user-defined networks?"
-        options={["Embedded DNS server at 127.0.0.11", "The host's /etc/resolv.conf"]}
-        correctIndex={0}
-        explanation="Docker runs an embedded DNS server at 127.0.0.11 for user-defined networks. Containers on the same user-defined network can reach each other by service name. This DNS server is NOT available on the default bridge."
+        prompt="When a container on a user-defined network tries to resolve the hostname 'db', the request goes to 127.0.0.11 instead of the host's DNS. Why does Docker intercept DNS at the loopback address, and what would break if containers used the host's /etc/resolv.conf directly?"
+        answer="Docker runs an embedded DNS server at 127.0.0.11 inside each container on user-defined networks. It intercepts DNS at the loopback address because container names like 'db' are internal to Docker — no external DNS server knows about them. When a container queries 127.0.0.11, Docker's DNS server checks if the name matches a container on the same network and returns its virtual IP. If the name isn't a container (e.g., 'google.com'), it forwards the query to the host's upstream DNS. If containers used /etc/resolv.conf directly, they'd hit an external DNS server that has no knowledge of Docker's container names, so 'db' would fail to resolve. The 127.0.0.11 approach also provides network isolation — containers on different user-defined networks can have services with the same name without collision."
         hint="Docker has its own DNS server for custom networks."
       />
     </>

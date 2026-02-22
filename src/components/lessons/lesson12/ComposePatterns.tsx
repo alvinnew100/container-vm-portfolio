@@ -7,7 +7,7 @@ import CodeBlock from "@/components/story/CodeBlock";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import FillInBlank from "@/components/story/FillInBlank";
+import RevealCard from "@/components/story/RevealCard";
 
 function ReverseProxyDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -263,13 +263,10 @@ services:
       </div>
     </SectionWrapper>
 
-      <FillInBlank
+      <RevealCard
         id="lesson12-dns-fill1"
-        prompt="In Docker Compose, service 'web' can reach service 'db' using the hostname {blank}."
-        blanks={[
-          { answer: "db", placeholder: "hostname" },
-        ]}
-        explanation="Docker Compose creates a user-defined network and registers each service name as a DNS hostname. So 'web' can connect to 'db' simply using 'db' as the hostname — Docker's embedded DNS resolves it to the container's IP."
+        prompt="In a Compose file, the 'web' service connects to 'db' using just the hostname 'db'. No IP address is configured anywhere. Trace the full path: how does the hostname 'db' become a routable IP address inside the container?"
+        answer="When Compose starts, it creates a user-defined bridge network (projectname_default). Each service's container is attached to this network and registered with Docker's embedded DNS server at 127.0.0.11. Inside the 'web' container, /etc/resolv.conf points to 127.0.0.11 as the nameserver. When the application code does a DNS lookup for 'db', the query goes to 127.0.0.11. Docker's DNS server looks up 'db' in its internal registry, finds the container's IP (e.g., 172.20.0.3), and returns it. The application then opens a TCP connection to 172.20.0.3, which routes through the veth pair into the docker0 bridge and out the other veth pair into the 'db' container's network namespace. The entire process is transparent — the service name in docker-compose.yml automatically becomes a DNS hostname, no configuration needed."
         hint="The service name in docker-compose.yml doubles as a DNS hostname."
       />
     </>

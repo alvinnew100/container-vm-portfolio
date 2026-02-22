@@ -3,7 +3,7 @@
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TermDefinition from "@/components/story/TermDefinition";
-import FillInBlank from "@/components/story/FillInBlank";
+import RevealCard from "@/components/story/RevealCard";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
@@ -144,12 +144,11 @@ export default function DockerArch() {
       </InfoCard>
     </SectionWrapper>
 
-      <FillInBlank
+      <RevealCard
         id="lesson8-arch-fill1"
-        prompt="The Docker stack from top to bottom: docker CLI → {blank} → containerd → runc → kernel"
-        blanks={[{ answer: "dockerd", placeholder: "?" }]}
-        explanation="The full stack: docker CLI sends REST API calls to dockerd (the Docker daemon). dockerd manages images, networks, and volumes, then delegates container lifecycle to containerd. containerd uses runc (the OCI runtime) to create namespaces and cgroups via the kernel."
-        hint="This is the Docker daemon — it runs as a background service and exposes the Docker API."
+        prompt="Why does Docker need both dockerd and containerd as separate daemons? What would go wrong if Docker was a single monolithic process from CLI to kernel?"
+        answer="The separation exists for resilience and modularity. dockerd (the Docker daemon) handles the high-level API — image management, networking, volumes, and user-facing features. containerd handles the low-level container lifecycle — creating, starting, stopping containers via runc and the kernel. If Docker were a single process, restarting it to apply updates would kill every running container. With the split architecture, you can restart dockerd without affecting running containers because containerd (and its shim processes) keep containers alive independently. This separation also enables Kubernetes to use containerd directly, bypassing dockerd entirely — eliminating an unnecessary middle layer. The full stack is: docker CLI sends REST API calls to dockerd, which delegates to containerd, which calls runc to configure namespaces and cgroups via the kernel."
+        hint="Think about what happens to running containers when you need to update the Docker daemon."
       />
     </>
   );

@@ -5,7 +5,7 @@ import InfoCard from "@/components/story/InfoCard";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import ZineCallout from "@/components/story/ZineCallout";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -165,12 +165,10 @@ export default function Comparison() {
         <ZineCallout page="4, 7" topic="why containers, containers = processes" />
       </div>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson4-compare-kc1"
-        question="What is the fundamental architectural difference between VMs and containers?"
-        options={["Containers share the host kernel; VMs have their own", "Containers are more secure than VMs"]}
-        correctIndex={0}
-        explanation="VMs include a full guest OS with its own kernel, running on a hypervisor. Containers share the host's Linux kernel and use namespaces/cgroups for isolation. This is why containers are lighter but VMs provide stronger isolation."
+        prompt="A colleague says 'Containers are just lightweight VMs.' When does this mental model help, and when does it dangerously mislead? What specific security assumption changes when you share a kernel?"
+        answer="The 'lightweight VM' metaphor helps for understanding the user experience — both provide isolated environments where you can run applications independently. But it dangerously misleads on security. In a VM, a kernel exploit in the guest is contained — the attacker is still trapped inside the VM because the hypervisor and host kernel are completely separate code running in a different privilege domain. In a container, a kernel exploit gives the attacker control of the shared host kernel, compromising every container on the machine. The attack surface is fundamentally different: VMs expose a narrow hypervisor interface (VMCS, emulated devices), while containers expose the entire Linux syscall surface (~300+ system calls). This is why multi-tenant cloud providers use VMs for isolation between customers, and why projects like gVisor and Kata Containers exist — to add a kernel boundary back into the container model."
         hint="Think about what layer provides isolation in each technology."
       />
     </SectionWrapper>

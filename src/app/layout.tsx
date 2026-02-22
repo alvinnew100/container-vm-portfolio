@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className="min-h-screen">
         <StoryProvider>
           <StoryNav />
-          <main>{children}</main>
+          <main className="lg:pl-52">{children}</main>
           <StoryFooter />
         </StoryProvider>
       </body>

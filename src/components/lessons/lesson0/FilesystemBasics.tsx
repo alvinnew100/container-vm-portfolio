@@ -6,7 +6,7 @@ import SectionWrapper from "@/components/story/SectionWrapper";
 import AnalogyCard from "@/components/story/AnalogyCard";
 import TermDefinition from "@/components/story/TermDefinition";
 import InfoCard from "@/components/story/InfoCard";
-import FillInBlank from "@/components/story/FillInBlank";
+import RevealCard from "@/components/story/RevealCard";
 
 interface TreeNode {
   name: string;
@@ -159,11 +159,10 @@ export default function FilesystemBasics() {
         share base files efficiently. Mounting is the foundation for both.
       </InfoCard>
 
-      <FillInBlank
+      <RevealCard
         id="lesson0-fs-fill1"
-        prompt="The root of the Linux filesystem is {blank}"
-        blanks={[{ answer: "/", placeholder: "?" }]}
-        explanation="The root of the Linux filesystem is / (forward slash). Everything branches from this single root — there are no drive letters like Windows."
+        prompt="Why does Linux use a single root (/) for its entire filesystem instead of drive letters like Windows (C:\, D:\)? What advantage does this design give to mounting and containers?"
+        answer="A single-root tree means every device, partition, and network share is just a directory in one unified namespace. This makes mounting seamless — you can attach any storage device at any point in the tree (e.g., /mnt/usb) and programs don't need to know where the data physically lives. For containers, this is powerful: you can mount a completely different directory tree as '/' for a container process, giving it an isolated filesystem view without any changes to the application. With drive letters, this kind of transparent remapping would be far more complex."
         hint="It's a single character, and it's the parent of every other path."
       />
     </SectionWrapper>

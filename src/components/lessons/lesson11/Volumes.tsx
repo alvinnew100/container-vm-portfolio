@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/story/SectionWrapper";
 import TerminalBlock from "@/components/story/TerminalBlock";
 import InfoCard from "@/components/story/InfoCard";
-import KnowledgeCheck from "@/components/story/KnowledgeCheck";
+import RevealCard from "@/components/story/RevealCard";
 
 function VolumeLifecycleDiagram() {
   const ref = useRef<HTMLDivElement>(null);
@@ -257,12 +257,10 @@ export default function Volumes() {
       </InfoCard>
     </SectionWrapper>
 
-      <KnowledgeCheck
+      <RevealCard
         id="lesson11-persist-kc1"
-        question="What happens to an anonymous volume when you run 'docker rm' on its container?"
-        options={["It's removed with the container", "It persists until manual cleanup"]}
-        correctIndex={0}
-        explanation="Anonymous volumes (created without a name via -v /data) are removed when the container is removed with docker rm. Named volumes persist. Use 'docker rm -v' explicitly or 'docker volume prune' to clean up orphaned volumes."
+        prompt="Docker has both anonymous volumes (-v /data) and named volumes (-v mydata:/data). If you 'docker rm' a container that uses each type, why do they behave differently? What design principle explains the distinction?"
+        answer="Anonymous volumes are created without an explicit name — Docker assigns them a random hash. Because no external reference points to them, Docker treats them as part of the container's lifecycle and removes them with 'docker rm'. Named volumes, however, have a user-assigned identifier that exists in Docker's volume registry independently of any container. The design principle is intentionality: if you took the time to name a volume, you clearly want the data to persist beyond any single container. Anonymous volumes are assumed to be throwaway scratch space. In practice, 'docker rm -v' explicitly removes anonymous volumes, and 'docker volume prune' cleans up any volumes not currently mounted by a running container. Named volumes must be explicitly deleted with 'docker volume rm'."
         hint="Anonymous vs named volumes have different lifecycle behaviors."
       />
     </>
