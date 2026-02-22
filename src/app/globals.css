@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  /* Cool blue palette — Docker/Container inspired */
+  --color-story-bg: #f7f9fc;
+  --color-story-surface: #edf1f7;
+  --color-story-card: #ffffff;
+  --color-story-border: #d1d9e6;
+  --color-story-dark: #0f1729;
+
+  --color-docker-blue: #2496ED;
+  --color-docker-teal: #00b8a9;
+  --color-docker-violet: #6c5ce7;
+  --color-docker-amber: #e17055;
+  --color-docker-red: #d63031;
+
+  --color-text-primary: #1a202c;
+  --color-text-secondary: #4a5568;
+  --color-text-muted: #8896a6;
+  --color-text-code: #2496ED;
+}
+
+body {
+  @apply bg-story-bg text-text-secondary antialiased;
+  font-feature-settings: "kern" 1;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-story-surface;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-story-border rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-text-muted;
+}
+
+/* Code block styling */
+pre {
+  @apply bg-story-dark rounded-xl p-4 overflow-x-auto text-sm font-mono text-white/90;
+}
+code {
+  @apply font-mono;
+}
+:not(pre) > code {
+  @apply text-docker-blue bg-docker-blue/5 px-1.5 py-0.5 rounded-md text-[0.85em];
+}
+
+/* Card shadows — cool tones */
+.card-shadow {
+  box-shadow: 0 1px 3px rgba(15, 23, 41, 0.06), 0 4px 16px rgba(15, 23, 41, 0.04);
+}
+.card-shadow-hover {
+  box-shadow: 0 4px 16px rgba(15, 23, 41, 0.10), 0 12px 32px rgba(15, 23, 41, 0.06);
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #2496ED 0%, #00b8a9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
