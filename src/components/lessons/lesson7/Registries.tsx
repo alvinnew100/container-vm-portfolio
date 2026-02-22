@@ -3,6 +3,7 @@
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
 import TerminalBlock from "@/components/story/TerminalBlock";
+import ZineCallout from "@/components/story/ZineCallout";
 
 export default function Registries() {
   return (
@@ -65,11 +66,23 @@ export default function Registries() {
       />
 
       <div className="mt-6">
+        <InfoCard variant="warning" title="Be Careful Where Your Images Come From">
+          Registries let anyone publish images. A malicious image could mine cryptocurrency or steal
+          data from your server. Always use <strong>official images</strong> or images from trusted publishers.
+          Scan images for vulnerabilities with <code>docker scout</code> or Trivy before deploying to production.
+        </InfoCard>
+      </div>
+
+      <div className="mt-4">
         <InfoCard variant="info" title="Image Size Optimization">
           Use Alpine-based images (5 MB base vs 77 MB Ubuntu). Use multi-stage builds to leave build tools
           out of the final image. Combine <code>RUN</code> commands to reduce layers. Remove package manager caches
           in the same layer they&apos;re created (<code>rm -rf /var/lib/apt/lists/*</code>).
         </InfoCard>
+      </div>
+
+      <div className="mt-4">
+        <ZineCallout page="5, 12" topic="images as tarballs, container registries, image safety" />
       </div>
     </SectionWrapper>
   );

@@ -2,6 +2,8 @@
 
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
+import TerminalBlock from "@/components/story/TerminalBlock";
+import ZineCallout from "@/components/story/ZineCallout";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -87,11 +89,69 @@ export default function ImageLayers() {
         </div>
       </div>
 
-      <InfoCard variant="tip" title="Layer Caching Optimization">
-        Docker caches layers. If you change <code>app.js</code>, only layers after <code>COPY app.js</code> are
-        rebuilt. That&apos;s why you should <code>COPY package.json</code> and <code>RUN npm install</code> before
-        copying your source code — the dependency layer gets cached and doesn&apos;t rebuild on every code change.
-      </InfoCard>
+      {/* Overlay filesystem details from the zine */}
+      <h4 className="text-text-primary font-semibold text-sm mb-3 mt-8">
+        How OverlayFS Works Under the Hood
+      </h4>
+      <p className="text-text-secondary text-sm leading-relaxed mb-4">
+        A layer is literally a <strong className="text-text-primary">directory</strong> on disk (identified by a sha256 hash of its contents).
+        The <code>mount -t overlay</code> command combines multiple directories into a single merged view
+        using 4 parameters:
+      </p>
+
+      <div className="grid sm:grid-cols-2 gap-4 mb-6">
+        <div className="bg-story-card rounded-xl p-4 border border-story-border card-shadow">
+          <code className="text-docker-blue text-xs font-bold">lowerdir</code>
+          <p className="text-text-secondary text-xs mt-1">The image layers (read-only). Multiple directories separated by colons.</p>
+        </div>
+        <div className="bg-story-card rounded-xl p-4 border border-story-border card-shadow">
+          <code className="text-docker-amber text-xs font-bold">upperdir</code>
+          <p className="text-text-secondary text-xs mt-1">Where all writes go. When you create, change, or delete a file, it&apos;s recorded here.</p>
+        </div>
+        <div className="bg-story-card rounded-xl p-4 border border-story-border card-shadow">
+          <code className="text-docker-violet text-xs font-bold">workdir</code>
+          <p className="text-text-secondary text-xs mt-1">Empty directory for OverlayFS internal use (atomic operations).</p>
+        </div>
+        <div className="bg-story-card rounded-xl p-4 border border-story-border card-shadow">
+          <code className="text-docker-teal text-xs font-bold">merged</code>
+          <p className="text-text-secondary text-xs mt-1">The final merged result — this is what the container sees as its filesystem.</p>
+        </div>
+      </div>
+
+      <TerminalBlock
+        title="overlay filesystem example"
+        lines={[
+          "# Create an overlay filesystem — just like Docker does",
+          "$ mount -t overlay overlay -o \\",
+          "    lowerdir=/lower,upperdir=/upper,workdir=/work \\",
+          "    /merged",
+          "",
+          "# The lower layer has: dog.txt, bird.txt",
+          "$ ls /lower",
+          "dog.txt  bird.txt",
+          "",
+          "# The upper layer has: cat.txt, dog.txt (modified)",
+          "$ ls /upper",
+          "cat.txt  dog.txt",
+          "",
+          "# The merged view combines both — upper wins for conflicts",
+          "$ ls /merged",
+          "cat.txt  dog.txt  bird.txt",
+          "# dog.txt here is the version from /upper, not /lower!",
+        ]}
+      />
+
+      <div className="mt-6">
+        <InfoCard variant="tip" title="Layer Caching Optimization">
+          Docker caches layers. If you change <code>app.js</code>, only layers after <code>COPY app.js</code> are
+          rebuilt. That&apos;s why you should <code>COPY package.json</code> and <code>RUN npm install</code> before
+          copying your source code — the dependency layer gets cached and doesn&apos;t rebuild on every code change.
+        </InfoCard>
+      </div>
+
+      <div className="mt-4">
+        <ZineCallout page="10-11" topic="layers as directories, overlay filesystems, mount -t overlay" />
+      </div>
     </SectionWrapper>
   );
 }

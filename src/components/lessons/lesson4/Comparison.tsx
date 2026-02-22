@@ -1,6 +1,8 @@
 "use client";
 
 import SectionWrapper from "@/components/story/SectionWrapper";
+import InfoCard from "@/components/story/InfoCard";
+import ZineCallout from "@/components/story/ZineCallout";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -125,6 +127,20 @@ export default function Comparison() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <InfoCard variant="info" title="Containers = Processes">
+          Here&apos;s the simplest way to understand the difference: a VM is a <em>virtual computer</em> with
+          its own kernel. A container is a <em>group of regular Linux processes</em> with restrictions.
+          You can start <code>top</code> inside a container and on the host simultaneously &mdash; they&apos;re
+          literally the same process, just viewed through different namespace lenses. On a Mac, containers
+          actually run inside a lightweight Linux VM (since macOS doesn&apos;t have namespaces/cgroups).
+        </InfoCard>
+      </div>
+
+      <div className="mt-4">
+        <ZineCallout page="4, 7" topic="why containers, containers = processes" />
       </div>
     </SectionWrapper>
   );

@@ -24,6 +24,24 @@ export default function StoryFooter() {
           >
             Linux Namespaces
           </a>
+          {" | "}
+          <a
+            href="https://wizardzines.com/zines/containers/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-docker-violet hover:underline"
+          >
+            &ldquo;How Containers Work&rdquo; by Julia Evans
+          </a>
+          {" "}
+          <a
+            href="/container-vm-portfolio/how-containers-work-wizardzines.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-docker-violet hover:underline"
+          >
+            (PDF)
+          </a>
         </p>
       </div>
     </footer>

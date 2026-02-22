@@ -2,6 +2,7 @@
 
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
+import ZineCallout from "@/components/story/ZineCallout";
 import { useState } from "react";
 
 const NS_TYPES = [
@@ -9,16 +10,16 @@ const NS_TYPES = [
     name: "PID",
     flag: "CLONE_NEWPID",
     isolates: "Process IDs",
-    desc: "Each namespace has its own PID numbering starting at 1. The first process (PID 1) acts as the init process for that namespace. Processes in different PID namespaces can have the same PID number without conflict.",
-    example: "Container sees its app as PID 1, while the host sees it as PID 4523.",
+    desc: "PID namespaces form a tree — the host is the root. Each namespace has its own PID numbering starting at 1. PID 1 is special: if it exits, every process in the namespace is killed. The host can see all container processes, but containers can only see their own. Killing PID 1 from inside accidentally would be bad, so Linux won't let you unless the process has set up a signal handler.",
+    example: "Container sees its app as PID 1, while the host sees it as PID 4523. Run 'lsns -t pid' to see all PID namespaces.",
     color: "docker-blue",
   },
   {
     name: "NET",
     flag: "CLONE_NEWNET",
     isolates: "Network stack",
-    desc: "Each namespace gets its own network interfaces, routing tables, iptables rules, and port space. Containers can all bind to port 80 without conflicts because each has its own network namespace.",
-    example: "Container has its own eth0 with IP 172.17.0.2, connected to host via veth pair.",
+    desc: "Each namespace gets its own network interfaces, routing tables, iptables rules, and port space. Namespaces usually have 2 interfaces: loopback (127.0.0.1, for internal connections) and another interface for external connections. 127.0.0.1 stays inside your namespace — nobody outside can reach it. Other namespaces connect to the host via a bridge.",
+    example: "Container has its own eth0 with IP 172.17.0.2 (private range), connected to host via veth pair and docker0 bridge.",
     color: "docker-teal",
   },
   {
@@ -49,8 +50,8 @@ const NS_TYPES = [
     name: "USER",
     flag: "CLONE_NEWUSER",
     isolates: "User and group IDs",
-    desc: "Maps UIDs/GIDs between namespaces. A process can be root (UID 0) inside the container but map to an unprivileged user (e.g., UID 100000) on the host. This is the foundation of rootless containers.",
-    example: "Container root (UID 0) maps to host UID 100000 — no real root privileges on host.",
+    desc: "Maps UIDs/GIDs between namespaces. A process can be root (UID 0) inside the container but map to an unprivileged user (e.g., UID 100000) on the host. 'Root' in a user namespace doesn't always have admin access — it has limited capabilities. Unmapped users show up as 'nobody'. The mapping is stored in /proc/self/uid_map.",
+    example: "Container root (UID 0) maps to host UID 100000 — no real root privileges on host. Check with: cat /proc/self/uid_map",
     color: "docker-blue",
   },
   {
@@ -122,7 +123,12 @@ export default function Namespaces() {
         When Docker creates a container, it calls <code>clone()</code> with all seven <code>CLONE_NEW*</code> flags.
         The resulting process has its own PIDs, network stack, filesystem, hostname, IPC, user mappings, and cgroup view.
         From inside, it looks like a complete machine. From outside, it&apos;s just a process with fancy isolation.
+        Every process has 7 namespaces — you can see them with <code>lsns -p PID</code> or <code>ls -l /proc/PID/ns</code>.
       </InfoCard>
+
+      <div className="mt-4">
+        <ZineCallout page="14-18" topic="namespaces, PID trees, user namespaces, network namespaces" />
+      </div>
     </SectionWrapper>
   );
 }

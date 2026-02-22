@@ -2,8 +2,9 @@
 
 import SectionWrapper from "@/components/story/SectionWrapper";
 import InfoCard from "@/components/story/InfoCard";
+import ZineCallout from "@/components/story/ZineCallout";
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 function ResourceMeter({ label, value, max, unit, color }: { label: string; value: number; max: number; unit: string; color: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -76,11 +77,39 @@ export default function Cgroups() {
         </div>
       </div>
 
+      {/* What happens when limits are hit */}
+      <div className="grid sm:grid-cols-2 gap-4 mb-8">
+        <div className="bg-docker-red/5 rounded-xl p-5 border border-docker-red/20">
+          <h4 className="text-docker-red font-semibold text-sm mb-2">Memory: OOM Killer</h4>
+          <p className="text-text-secondary text-sm leading-relaxed">
+            When a container exceeds its memory limit, the kernel&apos;s <strong>OOM (Out of Memory) killer</strong> steps
+            in and terminates the process. You&apos;ll see &ldquo;Killed&rdquo; in the output. This is a hard stop &mdash;
+            no graceful shutdown. That&apos;s why it&apos;s critical to set memory limits appropriately
+            and monitor usage.
+          </p>
+        </div>
+        <div className="bg-docker-amber/5 rounded-xl p-5 border border-docker-amber/20">
+          <h4 className="text-docker-amber font-semibold text-sm mb-2">CPU: Throttling</h4>
+          <p className="text-text-secondary text-sm leading-relaxed">
+            When a container hits its CPU quota for the current period, the kernel <strong>throttles</strong> it &mdash;
+            the process is paused until the next period begins. Unlike memory, this doesn&apos;t kill anything;
+            the process just has to wait. You&apos;ll see increased latency, not crashes. The quota resets
+            every <code>cpu.cfs_period_us</code> (default 100ms).
+          </p>
+        </div>
+      </div>
+
       <InfoCard variant="info" title="Docker Uses Cgroups Behind the Scenes">
         When you run <code>docker run --memory=512m --cpus=1.5 myapp</code>, Docker creates a cgroup
         for that container and sets <code>memory.limit_in_bytes=536870912</code> and{" "}
         <code>cpu.cfs_quota_us=150000</code>. The kernel enforces these limits transparently.
+        Cgroups also track usage — you can see a container&apos;s real-time memory and CPU at{" "}
+        <code>/sys/fs/cgroup/</code>.
       </InfoCard>
+
+      <div className="mt-4">
+        <ZineCallout page="13" topic="cgroups, OOM killer, CPU throttling" />
+      </div>
     </SectionWrapper>
   );
 }
